@@ -1,17 +1,20 @@
-import { Metadata } from 'next'
+import { Metadata } from "next"
 import { QueryParams, SanityDocument } from "next-sanity"
 import { sanityFetch } from "@/sanity/lib/live"
 import { notFound } from "next/navigation"
-import { eventsQuery, eventQuery } from '@/sanity/queries/documents/event-query'
-import { SiteQuery } from '@/sanity/queries/documents/site-query'
+import { eventsQuery, eventQuery } from "@/sanity/queries/documents/event-query"
+import { SiteQuery } from "@/sanity/queries/documents/site-query"
 import EventSingle from "@/components/event-single"
-import Script from 'next/script'
-import { generateEventJsonLd, generateFAQJsonLd, generateMetadata as generateSeoMetadata } from '@/lib/seo'
-import { client } from '@/sanity/lib/client'
+import Script from "next/script"
+import {
+  generateEventJsonLd,
+  generateFAQJsonLd,
+  generateMetadata as generateSeoMetadata,
+} from "@/lib/seo"
 
 export async function generateStaticParams() {
   try {
-    const events = await client.fetch(eventsQuery)
+    const { data: events } = await sanityFetch({ query: eventsQuery })
     return (events || [])
       .filter((e: SanityDocument) => e?.slug?.current && typeof e.slug.current === 'string')
       .map((e: SanityDocument) => ({ slug: e.slug.current }))

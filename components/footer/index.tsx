@@ -1,19 +1,13 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { client } from '@/sanity/lib/client'
-import { footerQuery } from '@/sanity/queries/components/page-nav-query'
 import Route from '@/components/route'
 import { BaseRouteType } from '@/types/objects/route-type'
 
-export default function Footer() {
-  const [navigation, setNavigation] = useState<{ items?: BaseRouteType[] } | null>(null)
-  const year = new Date().getFullYear()
+type FooterProps = {
+  navigation?: { items?: BaseRouteType[] } | null
+}
 
-  useEffect(() => {
-    client.fetch(footerQuery).then(setNavigation)
-  }, [])
+export default function Footer({ navigation }: FooterProps) {
+  const year = new Date().getFullYear()
 
   return (
     <footer className="border-t-4 border-foreground bg-background px-4 py-6">

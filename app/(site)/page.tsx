@@ -1,12 +1,15 @@
 import { sanityFetch } from "@/sanity/lib/live"
-import { Metadata } from 'next'
+import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { pageQuery } from '@/sanity/queries/documents/page-query'
-import { SiteQuery } from '@/sanity/queries/documents/site-query'
+import { pageQuery } from "@/sanity/queries/documents/page-query"
+import { SiteQuery } from "@/sanity/queries/documents/site-query"
 import Page from "@/components/page-single"
-import OrgJsonLd from "@/components/organization-jsonld"
-import Script from 'next/script'
-import { generateWebPageJsonLd, generateFAQJsonLd, generateMetadata as generateSeoMetadata } from '@/lib/seo'
+import Script from "next/script"
+import {
+  generateWebPageJsonLd,
+  generateFAQJsonLd,
+  generateMetadata as generateSeoMetadata,
+} from "@/lib/seo"
 
 export const generateMetadata = async (): Promise<Metadata> => {
   try {
@@ -44,7 +47,6 @@ export default async function Home() {
 
     return (
       <>
-        <OrgJsonLd />
         {schemas.length > 0 && (
           <Script id="home-jsonld" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas) }} />
         )}

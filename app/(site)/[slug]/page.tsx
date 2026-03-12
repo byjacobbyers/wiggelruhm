@@ -1,17 +1,20 @@
-import { Metadata } from 'next'
+import { Metadata } from "next"
 import { QueryParams, SanityDocument } from "next-sanity"
 import { sanityFetch } from "@/sanity/lib/live"
 import { notFound } from "next/navigation"
-import { pagesQuery, pageQuery } from '@/sanity/queries/documents/page-query'
-import { SiteQuery } from '@/sanity/queries/documents/site-query'
+import { pagesQuery, pageQuery } from "@/sanity/queries/documents/page-query"
+import { SiteQuery } from "@/sanity/queries/documents/site-query"
 import Page from "@/components/page-single"
-import Script from 'next/script'
-import { generateWebPageJsonLd, generateFAQJsonLd, generateMetadata as generateSeoMetadata } from '@/lib/seo'
-import { client } from '@/sanity/lib/client'
+import Script from "next/script"
+import {
+  generateWebPageJsonLd,
+  generateFAQJsonLd,
+  generateMetadata as generateSeoMetadata,
+} from "@/lib/seo"
 
 export async function generateStaticParams() {
   try {
-    const posts = await client.fetch(pagesQuery)
+    const { data: posts } = await sanityFetch({ query: pagesQuery })
     const excludedSlugs = ['quiz', 'resources']
     return (posts || [])
       .filter((p: SanityDocument) => {

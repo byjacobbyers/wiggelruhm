@@ -1,18 +1,12 @@
-'use client'
-
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { client } from '@/sanity/lib/client'
-import { headerQuery } from '@/sanity/queries/components/page-nav-query'
 import Route from '@/components/route'
 import { BaseRouteType } from '@/types/objects/route-type'
 
-export default function Header() {
-  const [navigation, setNavigation] = useState<{ items?: BaseRouteType[] } | null>(null)
+type HeaderProps = {
+  navigation?: { items?: BaseRouteType[] } | null
+}
 
-  useEffect(() => {
-    client.fetch(headerQuery).then(setNavigation)
-  }, [])
+export default function Header({ navigation }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b-4 border-black bg-background px-5">
