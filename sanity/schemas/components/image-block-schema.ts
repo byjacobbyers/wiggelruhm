@@ -15,8 +15,6 @@ export default defineType({
     }),
     defineField({ title: 'Anchor', name: 'anchor', type: 'string' }),
     defineField({ title: 'Image', name: 'image', type: 'defaultImage' }),
-    defineField({ title: 'Content', name: 'content', type: 'simpleText' }),
-    defineField({ title: 'CTA', name: 'cta', type: 'cta' }),
   ],
   preview: {
     select: { active: 'active' },

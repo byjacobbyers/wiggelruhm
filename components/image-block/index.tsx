@@ -2,15 +2,12 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import Route from '@/components/route'
 
 type ImageBlockProps = {
   active?: boolean
   componentIndex?: number
   anchor?: string
   image?: { asset?: { url?: string }; alt?: string } | null
-  content?: unknown
-  cta?: { active?: boolean; route?: unknown } | null
 }
 
 export default function ImageBlock({
@@ -18,7 +15,6 @@ export default function ImageBlock({
   componentIndex = 0,
   anchor,
   image,
-  cta,
 }: ImageBlockProps) {
   if (!active) return null
 
@@ -42,13 +38,6 @@ export default function ImageBlock({
               className="object-cover rounded-lg"
             />
           </motion.div>
-        ) : null}
-        {cta?.active && cta?.route ? (
-          <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
-            <span className="px-6 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90">
-              {(cta.route as { title?: string }).title || 'Learn More'}
-            </span>
-          </Route>
         ) : null}
       </div>
     </section>

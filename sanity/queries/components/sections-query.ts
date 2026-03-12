@@ -33,9 +33,7 @@ export const sectionsQuery = groq`
     _type == 'embedBlock' => { ... },
     _type == 'imageBlock' => {
       ...,
-      image { ${imageQuery} },
-      cta { ..., route { ${routeQuery} } },
-      ${portableTextWithLinks}
+      image { ${imageQuery} }
     },
     _type == 'faqBlock' => {
       ...,
