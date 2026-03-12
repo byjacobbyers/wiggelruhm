@@ -5,13 +5,14 @@ function normalizeBaseUrl(url: string): string {
   return url.endsWith('/') ? url.slice(0, -1) : url
 }
 
-function buildUrl(base: string, path: string): string {
-  const normalizedBase = normalizeBaseUrl(base)
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`
-  return `${normalizedBase}${normalizedPath}`
-}
-
 const baseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
+
+export function buildUrl(path?: string): string {
+  if (!path) return baseUrl
+  if (path.startsWith('http')) return path
+  const slash = path.startsWith('/') ? '' : '/'
+  return `${baseUrl}${slash}${path}`
+}
 
 const defaultTitle = 'Wiggelrhum'
 const defaultDescription = 'Wiggelrhum'
@@ -41,9 +42,7 @@ export function generateMetadata(
     : globalSeo?.shareGraphic?.asset?.url
     ? urlFor(globalSeo.shareGraphic.asset as Parameters<typeof urlFor>[0]).width(1200).height(630).url()
     : defaultOgImage
-  const pageUrl = options?.url
-    ? (options.url.startsWith('http') ? options.url : buildUrl(baseUrl, options.url))
-    : baseUrl
+  const pageUrl = options?.url ? buildUrl(options.url) : baseUrl
   const finalTitle = options?.titleSuffix ? `${title}${options.titleSuffix}` : title
 
   return {
@@ -68,7 +67,7 @@ export function generateWebPageJsonLd(data: {
   seo?: { shareGraphic?: { asset?: { url: string } } }
   _updatedAt?: string
 }) {
-  const pageUrl = data.url.startsWith('http') ? data.url : buildUrl(baseUrl, data.url)
+  const pageUrl = data.url.startsWith('http') ? data.url : buildUrl(data.url)
   return {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -89,7 +88,7 @@ export function generateEventJsonLd(data: {
   image?: { asset?: { url?: string } }
   _updatedAt?: string
 }) {
-  const eventUrl = data.url.startsWith('http') ? data.url : buildUrl(baseUrl, data.url)
+  const eventUrl = data.url.startsWith('http') ? data.url : buildUrl(data.url)
   return {
     '@context': 'https://schema.org',
     '@type': 'Event',
@@ -118,6 +117,96 @@ function extractTextFromPortableText(content: unknown): string {
     })
     .join(' ')
     .trim()
+}
+
+export type SiteType = {
+  title?: string
+  email?: string
+  address?: string
+  addressLocality?: string
+  addressRegion?: string
+  postalCode?: string
+  addressCountry?: string
+  sameAs?: string[]
+  seo?: { metaDesc?: string }
+  organizationJsonLd?: {
+    name?: string
+    legalName?: string
+    description?: string
+    logo?: { asset?: { url?: string } }
+    url?: string
+    email?: string
+    telephone?: string
+    priceRange?: string
+  }
+}
+
+export function generateOrganizationJsonLd(site: SiteType | null) {
+  if (!site) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'Wiggelrhum',
+      url: baseUrl,
+    }
+  }
+  const org = site.organizationJsonLd
+  const logoUrl = org?.logo?.asset?.url
+    ? (urlFor(org.logo.asset as Parameters<typeof urlFor>[0]).width(600).height(60).url())
+    : undefined
+  const name = org?.name || site.title || 'Wiggelrhum'
+  const siteUrl = org?.url || baseUrl
+  const email = site.email || org?.email
+
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name,
+    ...(org?.legalName && { legalName: org.legalName }),
+    ...(org?.description && { description: org.description }),
+    ...(logoUrl && {
+      logo: { '@type': 'ImageObject', url: logoUrl },
+      image: logoUrl,
+    }),
+    url: siteUrl,
+    ...(email && { email }),
+    ...(org?.telephone && { telephone: org.telephone }),
+    ...(org?.priceRange && { priceRange: org.priceRange }),
+  }
+
+  if (
+    site.address ||
+    site.addressLocality ||
+    site.addressRegion ||
+    site.postalCode ||
+    site.addressCountry
+  ) {
+    ;(schema as Record<string, unknown>).address = {
+      '@type': 'PostalAddress',
+      ...(site.address && { streetAddress: site.address }),
+      ...(site.addressLocality && { addressLocality: site.addressLocality }),
+      ...(site.addressRegion && { addressRegion: site.addressRegion }),
+      ...(site.postalCode && { postalCode: site.postalCode }),
+      ...(site.addressCountry && { addressCountry: site.addressCountry }),
+    }
+  }
+
+  if (Array.isArray(site.sameAs) && site.sameAs.length > 0) {
+    ;(schema as Record<string, unknown>).sameAs = site.sameAs.filter(Boolean)
+  }
+
+  return schema
+}
+
+export function generateWebSiteJsonLd(site: SiteType | null) {
+  const name = site?.organizationJsonLd?.name || site?.title || 'Wiggelrhum'
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name,
+    url: baseUrl,
+    publisher: { '@type': 'Organization', name },
+  }
 }
 
 export function generateFAQJsonLd(faqs: Array<{ question: string; answer: unknown }>) {
