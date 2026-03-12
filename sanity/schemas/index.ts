@@ -12,12 +12,14 @@ import ctaBlock from './components/cta-block-schema'
 import textBlock from './components/text-block-schema'
 import faqBlock from './components/faq-block-schema'
 import imageBlock from './components/image-block-schema'
+import embedBlock from './components/embed-block-schema'
 import spacerBlock from './components/spacer-block-schema'
 import dividerBlock from './components/divider-block-schema'
 
 import defaultImage from './objects/default-img-schema'
 import cta from './objects/cta-schema'
 import route from './objects/route-schema'
+import linkWithRoute from './objects/link-annotation-schema'
 import simpleText from './objects/simple-text-schema'
 import normalText from './objects/normal-text-schema'
 
@@ -34,11 +36,13 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     textBlock,
     faqBlock,
     imageBlock,
+    embedBlock,
     spacerBlock,
     dividerBlock,
     defaultImage,
     cta,
     route,
+    linkWithRoute,
     simpleText,
     normalText,
   ],

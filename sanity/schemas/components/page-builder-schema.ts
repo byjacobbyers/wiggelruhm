@@ -10,6 +10,7 @@ export default defineField({
     { type: 'textBlock' },
     { type: 'faqBlock' },
     { type: 'imageBlock' },
+    { type: 'embedBlock' },
     { type: 'spacerBlock' },
     { type: 'dividerBlock' },
   ],

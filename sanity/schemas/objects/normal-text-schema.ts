@@ -20,6 +20,7 @@ export default defineType({
           { title: 'Strong', value: 'strong' },
           { title: 'Emphasis', value: 'em' },
         ],
+        annotations: [{ type: 'linkWithRoute' }],
       },
     },
     { type: 'defaultImage' },

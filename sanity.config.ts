@@ -7,6 +7,7 @@
 import {visionTool} from '@sanity/vision'
 import {defineConfig} from 'sanity'
 import {structureTool} from 'sanity/structure'
+import {codeInput} from '@sanity/code-input'
 import {presentationTool} from 'sanity/presentation'
 
 import {apiVersion, dataset, projectId} from './sanity/env'
@@ -24,6 +25,7 @@ export default defineConfig({
   schema,
   plugins: [
     structureTool({structure}),
+    codeInput(),
     presentationTool({
       previewUrl: {
         origin: process.env.SANITY_STUDIO_PREVIEW_ORIGIN || baseUrl,

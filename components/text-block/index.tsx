@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { PortableText } from '@portabletext/react'
+import { portableTextComponents } from '@/lib/portable-text-components'
 
 type TextBlockProps = {
   active?: boolean
@@ -35,7 +36,10 @@ export default function TextBlock({
         viewport={{ once: true }}
       >
         {content && Array.isArray(content) ? (
-          <PortableText value={content as Parameters<typeof PortableText>[0]['value']} />
+          <PortableText
+            value={content as Parameters<typeof PortableText>[0]['value']}
+            components={portableTextComponents}
+          />
         ) : null}
       </motion.div>
     </section>

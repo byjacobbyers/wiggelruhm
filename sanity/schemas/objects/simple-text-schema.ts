@@ -17,6 +17,9 @@ export default defineType({
         { title: 'H4', value: 'h4' },
         { title: 'Quote', value: 'blockquote' },
       ],
+      marks: {
+        annotations: [{ type: 'linkWithRoute' }],
+      },
     },
   ],
 })
