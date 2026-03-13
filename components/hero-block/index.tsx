@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Route from '@/components/route'
-import Image from 'next/image'
+import SanityImage from '@/components/sanity-image'
 
 type HeroBlockProps = {
   active?: boolean
@@ -10,7 +10,7 @@ type HeroBlockProps = {
   content?: unknown
   layout?: string
   anchor?: string
-  image?: { asset?: { url?: string }; alt?: string } | null
+  image?: { asset?: { url?: string }; alt?: string; crop?: unknown; hotspot?: unknown } | null
   cta?: { active?: boolean; route?: unknown } | null
 }
 
@@ -56,11 +56,10 @@ export default function HeroBlock({
           viewport={{ once: true }}
           transition={{ delay: componentIndex !== 0 ? 0.5 : 0 }}
         >
-          {image?.asset?.url ? (
-            <Image
-              src={image.asset.url}
+          {image ? (
+            <SanityImage
+              image={image}
               alt={image.alt || 'Hero'}
-              fill
               className="object-cover rounded-lg"
             />
           ) : null}

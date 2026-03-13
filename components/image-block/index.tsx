@@ -1,13 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Image from 'next/image'
+import SanityImage from '@/components/sanity-image'
 
 type ImageBlockProps = {
   active?: boolean
   componentIndex?: number
   anchor?: string
-  image?: { asset?: { url?: string }; alt?: string } | null
+  image?: { asset?: { url?: string }; alt?: string; crop?: unknown; hotspot?: unknown } | null
 }
 
 export default function ImageBlock({
@@ -24,17 +24,16 @@ export default function ImageBlock({
       className="image-block w-full flex justify-center px-5 py-12"
     >
       <div className="container flex flex-col items-center gap-6">
-        {image?.asset?.url ? (
+        {image ? (
           <motion.div
             className="relative w-full aspect-video"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <Image
-              src={image.asset.url}
+            <SanityImage
+              image={image}
               alt={image.alt || 'Image'}
-              fill
               className="object-cover rounded-lg"
             />
           </motion.div>
