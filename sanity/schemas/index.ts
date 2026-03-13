@@ -2,6 +2,7 @@ import { type SchemaTypeDefinition } from 'sanity'
 
 import page from './documents/page-schema'
 import site from './documents/site-schema'
+import announcement from './documents/announcement-schema'
 import event from './documents/event-schema'
 import navigation from './documents/navigation-schema'
 
@@ -27,6 +28,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
     page,
     site,
+    announcement,
     event,
     navigation,
     seo,
