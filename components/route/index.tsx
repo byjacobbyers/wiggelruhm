@@ -1,46 +1,68 @@
 'use client'
 
+import { forwardRef } from 'react'
 import Link from 'next/link'
 import { BaseRouteType } from '@/types/objects/route-type'
 import { buildRouteProps } from '@/lib/route-resolver'
 import { ReactNode } from 'react'
+import { cn } from '@/lib/utils'
 
-interface RouteProps {
+interface RouteProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   data: BaseRouteType
   children: ReactNode
   className?: string
 }
 
-export default function Route({ data, children, className }: RouteProps) {
-  if (!data || !data.linkType) {
-    return <>{children}</>
-  }
+const Route = forwardRef<HTMLAnchorElement, RouteProps>(
+  ({ data, children, className, ...rest }, ref) => {
+    if (!data || !data.linkType) {
+      return <>{children}</>
+    }
 
-  const routeProps = buildRouteProps(data)
-  const isExternal =
-    data.linkType === 'external' || data.linkType === 'email' || data.linkType === 'telephone'
-  const isFileDownload = data.linkType === 'file'
-  const isAnchor = data.linkType === 'anchor'
+    const routeProps = buildRouteProps(data)
+    const isExternal =
+      data.linkType === 'external' ||
+      data.linkType === 'email' ||
+      data.linkType === 'telephone'
+    const isFileDownload = data.linkType === 'file'
+    const isAnchor = data.linkType === 'anchor'
 
-  if (isExternal || isFileDownload || data.blank) {
+    const mergedClassName = cn(className)
+
+    if (isExternal || isFileDownload || data.blank) {
+      return (
+        <a
+          ref={ref}
+          {...routeProps}
+          {...rest}
+          className={mergedClassName}
+        >
+          {children}
+        </a>
+      )
+    }
+
+    if (isAnchor) {
+      return (
+        <a
+          ref={ref}
+          {...routeProps}
+          {...rest}
+          className={mergedClassName}
+        >
+          {children}
+        </a>
+      )
+    }
+
     return (
-      <a {...routeProps} className={className}>
+      <Link ref={ref} {...routeProps} {...rest} className={mergedClassName}>
         {children}
-      </a>
+      </Link>
     )
   }
+)
 
-  if (isAnchor) {
-    return (
-      <a {...routeProps} className={className}>
-        {children}
-      </a>
-    )
-  }
+Route.displayName = 'Route'
 
-  return (
-    <Link {...routeProps} className={className}>
-      {children}
-    </Link>
-  )
-}
+export default Route

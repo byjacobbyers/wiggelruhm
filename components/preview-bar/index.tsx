@@ -4,6 +4,7 @@ import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { disableDraftMode } from "@/app/actions"
 import { useDraftModeEnvironment } from "next-sanity/hooks"
+import { Button } from "@/components/ui/button"
 
 export function PreviewBar() {
   const router = useRouter()
@@ -26,14 +27,16 @@ export function PreviewBar() {
         <span className="font-bold">Preview Mode</span>
         <span className="text-gray-700">You are viewing draft content</span>
       </div>
-      <button
+      <Button
         type="button"
+        variant="secondary"
+        size="sm"
         onClick={disable}
         disabled={pending}
-        className="px-4 py-1.5 bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wider text-xs font-semibold"
+        className="uppercase tracking-wider"
       >
         {pending ? "Disabling..." : "Exit Preview"}
-      </button>
+      </Button>
     </div>
   )
 }

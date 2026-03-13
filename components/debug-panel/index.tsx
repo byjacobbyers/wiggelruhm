@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useApp } from '@/context/app'
+import { Button } from '@/components/ui/button'
 
 export function DebugPanel() {
   const [isOpen, setIsOpen] = useState(false)
@@ -20,13 +21,15 @@ export function DebugPanel() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50">
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="px-3 py-1.5 text-sm font-mono bg-gray-800 text-white rounded-t-lg hover:bg-gray-700"
+        className="rounded-b-none font-mono"
       >
         {isOpen ? '▼' : '▲'} Debug
-      </button>
+      </Button>
 
       {isOpen && (
         <div className="bg-white border border-gray-300 rounded-b-lg shadow-lg max-w-sm">

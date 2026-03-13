@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { Button } from '@/components/ui/button'
 import Route from '@/components/route'
 
 type CtaBlockProps = {
@@ -40,11 +41,11 @@ export default function CtaBlock({
           transition={{ delay: componentIndex !== 0 ? 0.5 : 0 }}
         >
           {cta?.active && cta?.route ? (
-            <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
-              <span className="px-6 py-3 bg-primary text-primary-foreground rounded-md font-medium hover:opacity-90">
+            <Button asChild variant="default">
+              <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
                 {(cta.route as { title?: string }).title || 'Learn More'}
-              </span>
-            </Route>
+              </Route>
+            </Button>
           ) : null}
         </motion.div>
       </div>
