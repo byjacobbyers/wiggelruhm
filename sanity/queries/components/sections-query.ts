@@ -14,6 +14,36 @@ const portableTextWithLinks = `content[] {
 export const sectionsQuery = groq`
   sections[] {
     ...,
+    _type == 'coverBlock' => {
+      ...,
+      image { ${imageQuery} },
+      imageMobile { ${imageQuery} },
+      content[] {
+        ...,
+        markDefs[] {
+          ...,
+          _type == 'linkWithRoute' => { route { ${routeQuery} } }
+        }
+      },
+      cta { ..., route { ${routeQuery} } }
+    },
+    _type == 'coverVideo' => {
+      ...,
+      muxUrl {
+        asset-> { playbackId }
+      },
+      muxUrlMobile {
+        asset-> { playbackId }
+      },
+      content[] {
+        ...,
+        markDefs[] {
+          ...,
+          _type == 'linkWithRoute' => { route { ${routeQuery} } }
+        }
+      },
+      cta { ..., route { ${routeQuery} } }
+    },
     _type == 'heroBlock' => {
       ...,
       image { ${imageQuery} },

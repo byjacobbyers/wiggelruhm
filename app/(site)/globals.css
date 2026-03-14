@@ -198,21 +198,25 @@ html {
     top: 48px;
   }
   h1 {
-    @apply text-4xl font-bold tracking-tight pb-4;
+    @apply text-4xl 2xl:text-7xl font-bold tracking-tight leading-normal pb-4;
   }
   h2 {
-    @apply text-3xl font-semibold tracking-tight pb-3;
+    @apply text-3xl 2xl:text-5xl font-semibold tracking-tight leading-normal pb-3;
   }
   h3 {
-    @apply text-2xl font-semibold tracking-tight pb-2;
+    @apply text-2xl 2xl:text-4xl font-semibold tracking-tight leading-normal pb-2;
   }
   p {
-    @apply text-lg min-h-[28px];
+    @apply text-lg 2xl:text-2xl min-h-[28px];
   }
   ol {
-    @apply text-lg list-decimal pl-6 pb-2;
+    @apply text-lg 2xl:text-2xl list-decimal pl-6 pb-2;
   }
   ul {
-    @apply text-lg list-disc pl-6 pb-2;
+    @apply text-lg 2xl:text-2xl list-disc pl-6 pb-2;
   }
+}
+
+.content {
+  @apply flex flex-col gap-4;
 }

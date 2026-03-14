@@ -39,7 +39,7 @@ export default function FaqBlock({
             <div key={i} className="border-b border-border pb-6">
               <h3 className="text-xl font-semibold mb-2">{faq.question}</h3>
               {faq.answer ? (
-                <div className="prose prose-sm max-w-none">
+                <div className="content prose prose-sm max-w-none">
                   <SimpleText content={faq.answer} />
                 </div>
               ) : null}

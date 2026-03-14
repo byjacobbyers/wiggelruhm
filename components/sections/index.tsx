@@ -1,6 +1,8 @@
 'use client'
 
 import HeroBlock from '@/components/hero-block'
+import CoverBlock from '@/components/cover-block'
+import CoverVideo from '@/components/cover-video'
 import CtaBlock from '@/components/cta-block'
 import TextBlock from '@/components/text-block'
 import ImageBlock from '@/components/image-block'
@@ -11,6 +13,8 @@ import DividerBlock from '@/components/divider-block'
 
 const blockMap: Record<string, React.FC<Record<string, unknown>>> = {
   heroBlock: HeroBlock as React.FC<Record<string, unknown>>,
+  coverBlock: CoverBlock as React.FC<Record<string, unknown>>,
+  coverVideo: CoverVideo as React.FC<Record<string, unknown>>,
   ctaBlock: CtaBlock as React.FC<Record<string, unknown>>,
   textBlock: TextBlock as React.FC<Record<string, unknown>>,
   imageBlock: ImageBlock as React.FC<Record<string, unknown>>,

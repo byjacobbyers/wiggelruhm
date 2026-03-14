@@ -7,6 +7,7 @@ type TextBlockProps = {
   active?: boolean
   componentIndex?: number
   anchor?: string
+  backgroundColor?: 'primary' | 'secondary'
   contentAlignment?: string
   content?: unknown
 }
@@ -15,6 +16,7 @@ export default function TextBlock({
   active = true,
   componentIndex = 0,
   anchor,
+  backgroundColor = 'primary',
   contentAlignment = 'left',
   content,
 }: TextBlockProps) {
@@ -22,19 +24,22 @@ export default function TextBlock({
 
   const alignClass =
     contentAlignment === 'center' ? 'text-center' : contentAlignment === 'right' ? 'text-right' : 'text-left'
+  const bgClass = backgroundColor === 'secondary' ? 'bg-primary text-primary-foreground' : ''
 
   return (
     <section
       id={anchor || `text-block-${componentIndex}`}
-      className="text-block w-full flex justify-center px-5 py-12"
+      className={`text-block w-full flex justify-center px-5 py-12 ${bgClass}`}
     >
       <motion.div
-        className={`container prose max-w-none ${alignClass}`}
+        className={`container ${alignClass}`}
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
       >
-        <NormalText content={content} />
+        <div className="content">
+          <NormalText content={content} />
+        </div>
       </motion.div>
     </section>
   )

@@ -6,6 +6,8 @@ export default defineField({
   type: 'array',
   of: [
     { type: 'heroBlock' },
+    { type: 'coverBlock' },
+    { type: 'coverVideo' },
     { type: 'ctaBlock' },
     { type: 'textBlock' },
     { type: 'faqBlock' },

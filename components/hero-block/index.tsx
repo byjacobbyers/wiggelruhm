@@ -32,10 +32,10 @@ export default function HeroBlock({
   return (
     <section
       id={anchor || `hero-block-${componentIndex}`}
-      className="hero-block w-full flex justify-center px-5 py-12"
+      className="hero-block w-full flex justify-center px-5"
     >
       <div
-        className={`container flex flex-wrap md:flex-nowrap ${layoutClass} flex-col-reverse items-center w-full gap-8`}
+        className={`container flex flex-wrap md:flex-nowrap ${layoutClass} flex-col-reverse items-center w-full gap-10`}
       >
         <motion.div
           className="w-full md:w-1/2 flex flex-col gap-6"
@@ -45,20 +45,22 @@ export default function HeroBlock({
           transition={{ delay: componentIndex !== 0 ? 0.5 : 0 }}
         >
           {content ? (
-            <div className="prose prose-lg max-w-none">
+            <div className="content prose prose-lg max-w-none">
               <SimpleText content={content} />
             </div>
           ) : null}
           {cta?.active && cta?.route ? (
-            <Button asChild variant="default" className="mt-5">
-              <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
-                {(cta.route as { title?: string }).title || 'Learn More'}
-              </Route>
-            </Button>
+            <div className='flex'>
+              <Button asChild variant="default" className="mt-5">
+                <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
+                  {(cta.route as { title?: string }).title || 'Learn More'}
+                </Route>
+              </Button>
+            </div>
           ) : null}
         </motion.div>
         <motion.div
-          className="w-full md:w-1/2 aspect-video relative"
+          className="w-full md:w-1/2 aspect-square relative"
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
@@ -68,7 +70,7 @@ export default function HeroBlock({
             <SanityImage
               image={image}
               alt={image.alt || 'Hero'}
-              className="object-cover rounded-lg"
+              className="object-cover"
             />
           ) : null}
         </motion.div>
