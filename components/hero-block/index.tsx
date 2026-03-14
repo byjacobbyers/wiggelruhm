@@ -45,7 +45,7 @@ export default function HeroBlock({
           transition={{ delay: componentIndex !== 0 ? 0.5 : 0 }}
         >
           {content ? (
-            <div className="content prose prose-lg max-w-none">
+            <div className="content">
               <SimpleText content={content} />
             </div>
           ) : null}
