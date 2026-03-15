@@ -69,6 +69,21 @@ export const sectionsQuery = groq`
       ...,
       image { ${imageQuery} }
     },
+    _type == 'columnBlock' => {
+      ...,
+      columns[] {
+        ...,
+        content[] {
+          ...,
+          markDefs[] {
+            ...,
+            _type == 'linkWithRoute' => { route { ${routeQuery} } }
+          }
+        },
+        image { ${imageQuery} },
+        cta { ..., route { ${routeQuery} } }
+      }
+    },
     _type == 'faqBlock' => {
       ...,
       faqs[] {

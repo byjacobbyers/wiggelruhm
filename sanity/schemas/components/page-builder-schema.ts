@@ -14,6 +14,7 @@ export default defineField({
     { type: 'imageBlock' },
     { type: 'embedBlock' },
     { type: 'formBlock' },
+    { type: 'columnBlock' },
     { type: 'spacerBlock' },
     { type: 'dividerBlock' },
   ],
