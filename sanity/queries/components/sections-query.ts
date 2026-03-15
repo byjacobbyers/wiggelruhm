@@ -84,6 +84,10 @@ export const sectionsQuery = groq`
         cta { ..., route { ${routeQuery} } }
       }
     },
+    _type == 'galleryBlock' => {
+      ...,
+      images[] { ${imageQuery} }
+    },
     _type == 'faqBlock' => {
       ...,
       faqs[] {

@@ -18,6 +18,7 @@ import imageBlock from './components/image-block-schema'
 import embedBlock from './components/embed-block-schema'
 import formBlock from './components/form-block-schema'
 import columnBlock from './components/column-block-schema'
+import galleryBlock from './components/gallery-block-schema'
 import spacerBlock from './components/spacer-block-schema'
 import dividerBlock from './components/divider-block-schema'
 
@@ -48,6 +49,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     embedBlock,
     formBlock,
     columnBlock,
+    galleryBlock,
     spacerBlock,
     dividerBlock,
     column,
