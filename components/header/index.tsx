@@ -7,7 +7,7 @@ import Route from '@/components/route'
 import MenuButton from '@/components/header/menu-button'
 import MobileNav from '@/components/navigation/mobile'
 import { BaseRouteType } from '@/types/objects/route-type'
-import { m } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 type HeaderProps = {
   navigation?: { items?: BaseRouteType[] } | null
@@ -39,6 +39,10 @@ export default function Header({ navigation }: HeaderProps) {
       document.body.style.overflow = ''
     }
   }, [isOpen])
+
+  const closeMenu = () => {
+    toggleDropdown()
+  }
 
   return (
     <>
@@ -79,25 +83,27 @@ export default function Header({ navigation }: HeaderProps) {
         </div>
       </header>
 
-      <m.div
-        className={`fixed inset-0 z-40 xl:hidden bg-background ${!isOpen ? 'pointer-events-none' : ''}`}
-        style={{ paddingTop: dimensions.height }}
-        initial={false}
-        animate={
-          isOpen
-            ? { opacity: 1, visibility: 'visible' }
-            : { opacity: 0, visibility: 'hidden' }
-        }
-        transition={{ duration: 0.2 }}
+      <motion.div
+        initial={'closed'}
+        animate={isOpen ? 'open' : 'closed'}
+        transition={{ duration: 1, ease: [0.83, 0, 0.17, 1] }}
+        variants={{
+          closed: {
+            y: '-100%',
+            opacity: 0,
+          },
+          open: {
+            y: 0,
+            opacity: 1,
+          },
+        }}
+        style={{
+          paddingTop: dimensions.height,
+        }}
+        className='fixed left-0 top-0 z-40 flex h-screen w-screen flex-col items-center overflow-scroll bg-background px-5 text-center xl:hidden'
       >
-        {isOpen && (
-          <div className="flex flex-col items-center justify-start pt-8 px-5">
-            {navigation ? (
-              <MobileNav data={navigation} closeMenu={() => toggleDropdown()} />
-            ) : null}
-          </div>
-        )}
-      </m.div>
+        {navigation && <MobileNav data={navigation} closeMenu={closeMenu} />}
+      </motion.div>
     </>
   )
 }
