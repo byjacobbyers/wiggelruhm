@@ -16,6 +16,7 @@ export default defineField({
     { type: 'formBlock' },
     { type: 'columnBlock' },
     { type: 'galleryBlock' },
+    { type: 'videoBlock' },
     { type: 'spacerBlock' },
     { type: 'dividerBlock' },
   ],

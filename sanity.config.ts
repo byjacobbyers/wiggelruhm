@@ -10,6 +10,7 @@ import {structureTool} from 'sanity/structure'
 import {codeInput} from '@sanity/code-input'
 import {presentationTool} from 'sanity/presentation'
 import {muxInput} from 'sanity-plugin-mux-input'
+import {media} from 'sanity-plugin-media'
 
 import {apiVersion, dataset, projectId} from './sanity/env'
 import {schema} from './sanity/schemas'
@@ -27,6 +28,7 @@ export default defineConfig({
   plugins: [
     structureTool({structure}),
     codeInput(),
+    media(),
     muxInput(),
     presentationTool({
       previewUrl: {

@@ -67,7 +67,8 @@ export const sectionsQuery = groq`
     },
     _type == 'imageBlock' => {
       ...,
-      image { ${imageQuery} }
+      image { ${imageQuery} },
+      imageMobile { ${imageQuery} }
     },
     _type == 'columnBlock' => {
       ...,
@@ -87,6 +88,11 @@ export const sectionsQuery = groq`
     _type == 'galleryBlock' => {
       ...,
       images[] { ${imageQuery} }
+    },
+    _type == 'videoBlock' => {
+      ...,
+      muxUrl { asset-> { playbackId } },
+      muxUrlMobile { asset-> { playbackId } }
     },
     _type == 'faqBlock' => {
       ...,
