@@ -16,6 +16,10 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Google Tag Manager
+
+Set `NEXT_PUBLIC_GTM_ID=GTM-XXXX` in `.env.local` to load the container. Consent Mode runs before GTM via an inline script; GA4 and other tags should be configured **inside GTM** (no separate `NEXT_PUBLIC_GA_MEASUREMENT_ID` in this app).
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

@@ -147,6 +147,30 @@ export function DebugPanel() {
                       : 'Denied'}
                   </span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Ad user data:</span>
+                  <span
+                    className={
+                      cookieConsent.ad_user_data
+                        ? 'text-green-600'
+                        : 'text-red-600'
+                    }
+                  >
+                    {cookieConsent.ad_user_data ? 'Granted' : 'Denied'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Ad personalization:</span>
+                  <span
+                    className={
+                      cookieConsent.ad_personalization
+                        ? 'text-green-600'
+                        : 'text-red-600'
+                    }
+                  >
+                    {cookieConsent.ad_personalization ? 'Granted' : 'Denied'}
+                  </span>
+                </div>
               </div>
             </div>
 
