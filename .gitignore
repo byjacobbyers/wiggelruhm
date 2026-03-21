@@ -19,6 +19,8 @@
 
 # cursor
 /.cursor/
+.cursor/
+.cursor
 
 
 # production
