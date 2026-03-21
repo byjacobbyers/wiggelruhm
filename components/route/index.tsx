@@ -7,11 +7,34 @@ import { buildRouteProps } from '@/lib/route-resolver'
 import { ReactNode, type MouseEvent } from 'react'
 import { cn } from '@/lib/utils'
 import { useCtaLocation } from '@/context'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface RouteProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   data: BaseRouteType
   children: ReactNode
   className?: string
+}
+
+function RouteLinkWithOptionalTooltip({
+  tooltipText,
+  children,
+}: {
+  tooltipText?: string
+  children: React.ReactElement
+}) {
+  if (!tooltipText) return children
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent>
+        <p className="max-w-xs text-sm! text-balance">{tooltipText}</p>
+      </TooltipContent>
+    </Tooltip>
+  )
 }
 
 const Route = forwardRef<HTMLAnchorElement, RouteProps>(
@@ -33,6 +56,7 @@ const Route = forwardRef<HTMLAnchorElement, RouteProps>(
             onClickFromRest?.(e)
           }
         : undefined
+    const { title: titleTooltip, ...routePropsForDom } = routePropsWithoutOnClick
     const isExternal =
       data.linkType === 'external' ||
       data.linkType === 'email' ||
@@ -50,45 +74,51 @@ const Route = forwardRef<HTMLAnchorElement, RouteProps>(
 
     if (isExternal || isFileDownload || data.blank) {
       return (
-        <a
-          ref={ref}
-          {...routePropsWithoutOnClick}
-          {...dataAttrs}
-          {...restWithoutOnClick}
-          onClick={mergedOnClick}
-          className={mergedClassName}
-        >
-          {children}
-        </a>
+        <RouteLinkWithOptionalTooltip tooltipText={titleTooltip}>
+          <a
+            ref={ref}
+            {...routePropsForDom}
+            {...dataAttrs}
+            {...restWithoutOnClick}
+            onClick={mergedOnClick}
+            className={mergedClassName}
+          >
+            {children}
+          </a>
+        </RouteLinkWithOptionalTooltip>
       )
     }
 
     if (isAnchor) {
       return (
-        <a
+        <RouteLinkWithOptionalTooltip tooltipText={titleTooltip}>
+          <a
+            ref={ref}
+            {...routePropsForDom}
+            {...dataAttrs}
+            {...restWithoutOnClick}
+            onClick={mergedOnClick}
+            className={mergedClassName}
+          >
+            {children}
+          </a>
+        </RouteLinkWithOptionalTooltip>
+      )
+    }
+
+    return (
+      <RouteLinkWithOptionalTooltip tooltipText={titleTooltip}>
+        <Link
           ref={ref}
-          {...routePropsWithoutOnClick}
+          {...routePropsForDom}
           {...dataAttrs}
           {...restWithoutOnClick}
           onClick={mergedOnClick}
           className={mergedClassName}
         >
           {children}
-        </a>
-      )
-    }
-
-    return (
-      <Link
-        ref={ref}
-        {...routePropsWithoutOnClick}
-        {...dataAttrs}
-        {...restWithoutOnClick}
-        onClick={mergedOnClick}
-        className={mergedClassName}
-      >
-        {children}
-      </Link>
+        </Link>
+      </RouteLinkWithOptionalTooltip>
     )
   }
 )
