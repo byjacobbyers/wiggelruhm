@@ -20,7 +20,7 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
 export default defineConfig({
   name: 'default',
-  title: 'Wiggelrhum',
+  title: 'Wiggelruhm',
   basePath: '/studio',
   projectId,
   dataset,

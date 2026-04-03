@@ -33,17 +33,17 @@ export const generateMetadata = async ({ params }: Props): Promise<Metadata> => 
       sanityFetch({ query: SiteQuery }),
     ])
 
-    if (!event) return generateSeoMetadata(undefined, undefined, undefined, 'Event at Wiggelrhum.')
+    if (!event) return generateSeoMetadata(undefined, undefined, undefined, 'Event at Wiggelruhm.')
 
     return generateSeoMetadata(
       event?.seo,
       global?.seo,
       event?.title,
       'Join us for this event.',
-      { url: `/events/${resolved.slug}`, titleSuffix: ' :: Wiggelrhum' }
+      { url: `/events/${resolved.slug}`, titleSuffix: ' :: Wiggelruhm' }
     )
   } catch {
-    return generateSeoMetadata(undefined, undefined, undefined, 'Event at Wiggelrhum.')
+    return generateSeoMetadata(undefined, undefined, undefined, 'Event at Wiggelruhm.')
   }
 }
 
