@@ -1,18 +1,12 @@
 'use client'
 
-import Link from 'next/link'
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
 } from '@/components/ui/navigation-menu'
 import Route from '@/components/route'
-import { BaseRouteType } from '@/types/objects/route-type'
-
-interface MobileNavProps {
-  data: { items?: BaseRouteType[] }
-  closeMenu: () => void
-}
+import type { MobileNavProps } from '@/types/components/mobile-nav-type'
 
 export default function MobileNav({ data, closeMenu }: MobileNavProps) {
   const handleItemClick = () => {
@@ -22,19 +16,6 @@ export default function MobileNav({ data, closeMenu }: MobileNavProps) {
   return (
     <NavigationMenu viewport={false} className="w-full max-w-none">
       <NavigationMenuList className="flex w-full flex-col gap-y-5 p-0">
-        <NavigationMenuItem
-          key={'header-0'}
-          id={'header-0'}
-          className="w-full"
-          onClick={handleItemClick}
-        >
-          <Link
-            href="/"
-            className="flex w-full justify-center text-2xl"
-          >
-            Home
-          </Link>
-        </NavigationMenuItem>
         {data.items?.map((item, index) => (
           <NavigationMenuItem
             key={'header' + index + 1}
@@ -44,7 +25,7 @@ export default function MobileNav({ data, closeMenu }: MobileNavProps) {
           >
             <Route
               data={item}
-              className="flex w-full justify-center text-2xl"
+              className="flex w-full justify-center text-3xl font-bold"
             >
               {item.title || 'Needs title'}
             </Route>

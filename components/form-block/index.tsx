@@ -7,43 +7,39 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { trackEvent } from '@/lib/gtm'
-
-interface FormData {
-  name: string
-  email: string
-  message: string
-  isAnonymous: boolean
-  website?: string
-}
-
-interface FormBlockProps {
-  active?: boolean
-  componentIndex?: number
-  anchor?: string
-  content?: unknown
-}
+import {
+  normalizeSectionBackground,
+  formSectionSurfaceClasses,
+  sectionSurfaceAttrs,
+} from '@/lib/section-background'
+import { sectionPaddingToClass } from '@/lib/section-padding'
+import { cn } from '@/lib/utils'
+import type { FormBlockFormData, FormBlockProps } from '@/types/components/form-block-type'
 
 export default function FormBlock({
   active = true,
   componentIndex = 0,
+  sectionPadding,
   anchor,
+  backgroundColor,
   content,
 }: FormBlockProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<FormBlockFormData>({
     name: '',
     email: '',
     message: '',
     isAnonymous: false,
     website: '',
   })
-  const [errors, setErrors] = useState<Partial<FormData>>({})
+  const [errors, setErrors] = useState<Partial<FormBlockFormData>>({})
 
   const validateForm = (): boolean => {
-    const newErrors: Partial<FormData> = {}
+    const newErrors: Partial<FormBlockFormData> = {}
 
     if (!formData.isAnonymous) {
       if (!formData.name.trim()) newErrors.name = 'Name is required'
@@ -117,7 +113,7 @@ export default function FormBlock({
     }
   }
 
-  const handleInputChange = (field: keyof FormData, value: string | boolean) => {
+  const handleInputChange = (field: keyof FormBlockFormData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }))
@@ -126,10 +122,18 @@ export default function FormBlock({
 
   if (!active) return null
 
+  const bg = normalizeSectionBackground(backgroundColor)
+
   return (
     <section
       id={anchor || `form-${componentIndex}`}
-      className="form-block w-full flex justify-center px-5 py-16 lg:py-24 bg-primary text-primary-foreground"
+      data-background-color={bg}
+      {...sectionSurfaceAttrs(bg)}
+      className={cn(
+        'form-block w-full flex justify-center px-5',
+        formSectionSurfaceClasses(bg),
+        sectionPaddingToClass(sectionPadding, 'default')
+      )}
     >
       <div className="container flex flex-col justify-center">
         <motion.div
@@ -143,9 +147,14 @@ export default function FormBlock({
             duration: 1.5,
           }}
         >
-          {content ? <SimpleText content={content} /> : null}
+          {content ? (
+            <div className="content">
+              <SimpleText content={content} />
+            </div>
+          ) : null}
 
-          <div className="bg-background text-foreground shadow-lg p-6 mt-8">
+          <Card className="mt-8 shadow-lg">
+            <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="flex flex-row items-center justify-between border p-4">
                 <div className="space-y-0.5">
@@ -252,7 +261,8 @@ export default function FormBlock({
                 </motion.div>
               )}
             </form>
-          </div>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
     </section>

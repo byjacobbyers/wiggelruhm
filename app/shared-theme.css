@@ -1,0 +1,31 @@
+/**
+ * Shared tokens for the site + Sanity Studio (import from (site)/globals.css and (studio)/layout.tsx).
+ * Primary matches Wiggelruhm site palette in app/(site)/globals.css.
+ */
+:root {
+  --primary: #d87943;
+  --primary-foreground: #ffffff;
+
+  --text-display: 3.6rem;
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.028em;
+  --text-display--font-weight: 700;
+}
+
+.dark {
+  /* Align with site .dark: teal actions on orange field */
+  --primary: #527575;
+  --primary-foreground: #ffffff;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --text-display: 3rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  :root {
+    --text-display: 3.3125rem;
+  }
+}

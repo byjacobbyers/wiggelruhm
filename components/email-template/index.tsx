@@ -1,18 +1,12 @@
-import * as React from 'react'
+import type { EmailTemplateProps } from '@/types/components/email-template-type'
 
-interface EmailTemplateProps {
-  name?: string
-  email?: string
-  message: string
-  isAnonymous: boolean
-}
-
-export const EmailTemplate: React.FC<EmailTemplateProps> = ({
+export function EmailTemplate({
   name,
   email,
   message,
   isAnonymous,
-}) => (
+}: EmailTemplateProps) {
+  return (
   <div
     style={{
       fontFamily: 'Arial, sans-serif',
@@ -106,4 +100,5 @@ export const EmailTemplate: React.FC<EmailTemplateProps> = ({
       <p>Timestamp: {new Date().toLocaleString()}</p>
     </div>
   </div>
-)
+  )
+}

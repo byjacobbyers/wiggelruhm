@@ -2,18 +2,17 @@
 
 import { motion } from 'framer-motion'
 import { useMemo } from 'react'
-
-type EmbedCodeValue =
-  | string
-  | { code?: string; language?: string }
-  | null
-  | undefined
-
-function extractIframeSrc(html: string): string | null {
-  if (!html || typeof html !== 'string') return null
-  const match = html.match(/<iframe[^>]+src=["']([^"']+)["']/i)
-  return match ? match[1] : null
-}
+import { cleanStega } from '@/lib/stega'
+import {
+  normalizeSectionBackground,
+  sectionSemanticSurfaceClasses,
+  sectionSurfaceAttrs,
+} from '@/lib/section-background'
+import { normalizeSectionContentLayout } from '@/lib/section-content-layout'
+import { sectionPaddingToClass } from '@/lib/section-padding'
+import { cn } from '@/lib/utils'
+import type { EmbedBlockProps, EmbedCodeValue } from '@/types/components/embed-block-type'
+import { Card } from '@/components/ui/card'
 
 function getCodeString(value: EmbedCodeValue): string {
   if (!value) return ''
@@ -24,54 +23,67 @@ function getCodeString(value: EmbedCodeValue): string {
   return ''
 }
 
-type EmbedBlockProps = {
-  active?: boolean
-  componentIndex?: number
-  anchor?: string
-  title?: string | null
-  embedCode?: EmbedCodeValue
-  maxWidth?: string
-}
-
 export default function EmbedBlock({
   active = true,
   componentIndex = 0,
+  sectionPadding,
   anchor,
+  contentLayout,
+  backgroundColor,
   title,
   embedCode,
   maxWidth = 'max-w-2xl',
 }: EmbedBlockProps) {
-  const iframeSrc = useMemo(() => {
-    const code = getCodeString(embedCode)
-    return extractIframeSrc(code)
+  const html = useMemo(() => {
+    const raw = getCodeString(embedCode)
+    return cleanStega(raw).trim()
   }, [embedCode])
 
   if (!active) return null
-  if (!iframeSrc) return null
+  if (!html) return null
+
+  const bg = normalizeSectionBackground(backgroundColor)
+  const layout = normalizeSectionContentLayout(contentLayout)
+  const iframeTitle = title?.trim() || 'Embedded content'
 
   return (
     <section
       id={anchor || `embed-block-${componentIndex}`}
-      className="embed-block w-full flex justify-center px-5"
+      data-background-color={bg}
+      {...sectionSurfaceAttrs(bg)}
+      className={cn(
+        'embed-block w-full flex justify-center px-5',
+        sectionSemanticSurfaceClasses(bg),
+        sectionPaddingToClass(sectionPadding, 'default')
+      )}
+      aria-label={iframeTitle}
     >
-      <motion.div
-        className={`w-full ${maxWidth} mx-auto`}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-      >
-        {title ? (
-          <h2 className="text-center mb-6">{title}</h2>
-        ) : null}
-        <div className="relative w-full aspect-4/3 min-h-[300px] rounded-lg overflow-hidden border border-border">
-          <iframe
-            src={iframeSrc}
-            title="Embedded content"
-            className="absolute inset-0 w-full h-full"
-            allowFullScreen
-          />
-        </div>
-      </motion.div>
+      <div className="container">
+        <motion.div
+          className={`w-full ${maxWidth} mx-auto content`}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          {layout === 'card' ? (
+            <Card className="w-full">
+              {title ? <h2 className="text-center mb-6">{title}</h2> : null}
+              <div
+                className="embed-block__inner relative w-full min-h-[300px] rounded-lg overflow-hidden border border-border [&_iframe]:block [&_iframe]:min-h-[300px] [&_iframe]:w-full [&_iframe]:max-w-full [&_iframe]:border-0"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            </Card>
+          ) : (
+            <>
+              {title ? <h2 className="text-center mb-6">{title}</h2> : null}
+              <div
+                className="embed-block__inner relative w-full min-h-[300px] rounded-lg overflow-hidden border border-border [&_iframe]:block [&_iframe]:min-h-[300px] [&_iframe]:w-full [&_iframe]:max-w-full [&_iframe]:border-0"
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            </>
+          )}
+        </motion.div>
+      </div>
     </section>
   )
 }

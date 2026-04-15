@@ -1,11 +1,12 @@
 import { Metadata } from 'next'
 import { urlFor } from '@/sanity/lib/image'
+import { getPublicSiteUrl } from '@/lib/site-url'
 
 function normalizeBaseUrl(url: string): string {
   return url.endsWith('/') ? url.slice(0, -1) : url
 }
 
-const baseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
+const baseUrl = normalizeBaseUrl(getPublicSiteUrl())
 
 export function buildUrl(path?: string): string {
   if (!path) return baseUrl

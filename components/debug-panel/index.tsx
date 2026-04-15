@@ -10,9 +10,12 @@ export function DebugPanel() {
   const { geolocation, cookieConsent, hasAcceptedCookies } = useApp()
 
   useEffect(() => {
-    setGtmAvailable(
-      typeof (window as Window & { gtag?: unknown }).gtag === 'function'
-    )
+    const id = requestAnimationFrame(() => {
+      setGtmAvailable(
+        typeof (window as Window & { gtag?: unknown }).gtag === 'function'
+      )
+    })
+    return () => cancelAnimationFrame(id)
   }, [])
 
   if (process.env.NODE_ENV !== 'development') {

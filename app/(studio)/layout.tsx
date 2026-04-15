@@ -1,3 +1,4 @@
+import '../shared-theme.css'
 import '../globals.css'
 import './studio.css'
 

@@ -2,9 +2,8 @@
 
 import { forwardRef } from 'react'
 import Link from 'next/link'
-import { BaseRouteType } from '@/types/objects/route-type'
 import { buildRouteProps } from '@/lib/route-resolver'
-import { ReactNode, type MouseEvent } from 'react'
+import type { MouseEvent } from 'react'
 import { cn } from '@/lib/utils'
 import { useCtaLocation } from '@/context'
 import {
@@ -12,26 +11,21 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-
-interface RouteProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
-  data: BaseRouteType
-  children: ReactNode
-  className?: string
-}
+import type {
+  RouteLinkWithOptionalTooltipProps,
+  RouteProps,
+} from '@/types/components/route-link-type'
 
 function RouteLinkWithOptionalTooltip({
   tooltipText,
   children,
-}: {
-  tooltipText?: string
-  children: React.ReactElement
-}) {
+}: RouteLinkWithOptionalTooltipProps) {
   if (!tooltipText) return children
   return (
     <Tooltip>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent>
-        <p className="max-w-xs text-sm! text-balance">{tooltipText}</p>
+        <p className="max-w-xs text-balance">{tooltipText}</p>
       </TooltipContent>
     </Tooltip>
   )
@@ -48,7 +42,7 @@ const Route = forwardRef<HTMLAnchorElement, RouteProps>(
     const routeProps = buildRouteProps(data, {
       ctaLocation: ctaLocation || undefined,
     })
-    const { onClick: routeOnClick, ...routePropsWithoutOnClick } = routeProps
+    const { onClick: routeOnClick, title: titleTooltip, ...routePropsForDom } = routeProps
     const mergedOnClick =
       routeOnClick || onClickFromRest
         ? (e: MouseEvent<HTMLAnchorElement>) => {
@@ -56,7 +50,6 @@ const Route = forwardRef<HTMLAnchorElement, RouteProps>(
             onClickFromRest?.(e)
           }
         : undefined
-    const { title: titleTooltip, ...routePropsForDom } = routePropsWithoutOnClick
     const isExternal =
       data.linkType === 'external' ||
       data.linkType === 'email' ||

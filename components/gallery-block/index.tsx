@@ -2,30 +2,30 @@
 
 import SanityImage from '@/components/sanity-image'
 import { useState } from 'react'
-
-type GalleryBlockProps = {
-  active?: boolean
-  componentIndex?: number
-  anchor?: string
-  images?: Array<{
-    asset?: { metadata?: { dimensions?: { width?: number; height?: number } } }
-    [key: string]: unknown
-  }>
-  imagesPerRow?: number
-  enableLightbox?: boolean
-}
+import {
+  normalizeSectionBackground,
+  sectionSemanticSurfaceClasses,
+  sectionSurfaceAttrs,
+} from '@/lib/section-background'
+import { sectionPaddingToClass } from '@/lib/section-padding'
+import { cn } from '@/lib/utils'
+import type { GalleryBlockProps } from '@/types/components/gallery-block-type'
 
 export default function GalleryBlock({
   active = true,
   componentIndex = 0,
+  sectionPadding,
   anchor,
+  backgroundColor,
   images,
   imagesPerRow = 3,
   enableLightbox = true,
 }: GalleryBlockProps) {
+  const [lightboxImage, setLightboxImage] = useState<number | null>(null)
+
   if (!active) return null
 
-  const [lightboxImage, setLightboxImage] = useState<number | null>(null)
+  const bg = normalizeSectionBackground(backgroundColor)
   const imagesPerRowValue = imagesPerRow || 3
   const gridCols =
     imagesPerRowValue === 2
@@ -40,7 +40,13 @@ export default function GalleryBlock({
     <>
       <section
         id={anchor || `gallery-block-${componentIndex}`}
-        className="gallery-block w-full py-20 flex justify-center px-5"
+        data-background-color={bg}
+        {...sectionSurfaceAttrs(bg)}
+        className={cn(
+          'gallery-block w-full flex justify-center px-5',
+          sectionSemanticSurfaceClasses(bg),
+          sectionPaddingToClass(sectionPadding, 'default')
+        )}
       >
         <div className="container">
           <div className="flex flex-wrap -mx-[15px]">
@@ -49,7 +55,7 @@ export default function GalleryBlock({
                 {images.map((image, index) => (
                   <div
                     key={index}
-                    className="relative aspect-square overflow-hidden bg-muted"
+                    className="relative aspect-square overflow-hidden rounded-lg border border-border bg-muted shadow-lg"
                   >
                     {enableLightbox !== false ? (
                       <button

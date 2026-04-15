@@ -1,74 +1,151 @@
 'use client'
 
-import { useEffect } from 'react'
+import type { CSSProperties } from 'react'
+import { useEffect, useState } from 'react'
 import SimpleText from '@/components/simple-text'
+import { ImagePlaceholder } from '@/components/sanity-image/placeholder'
 import { Button } from '@/components/ui/button'
 import Route from '@/components/route'
 import { urlFor } from '@/sanity/lib/image'
+import { cleanStega } from '@/lib/stega'
+import { sectionPaddingToClass } from '@/lib/section-padding'
+import { normalizeSectionContentLayout } from '@/lib/section-content-layout'
+import type {
+  CoverBlockImage,
+  CoverBlockImageMobile,
+  CoverBlockProps,
+} from '@/types/components/cover-block-type'
+import { Card } from '@/components/ui/card'
 
-type CoverBlockProps = {
-  active?: boolean
-  componentIndex?: number
-  anchor?: string
-  backgroundType?: 'image' | 'color'
-  image?: { asset?: { url?: string }; alt?: string; crop?: unknown; hotspot?: { x?: number; y?: number } }
-  imageMobile?: { asset?: { url?: string }; hotspot?: { x?: number; y?: number } } | null
-  backgroundColor?: 'black' | 'white' | 'primary'
-  height?: 'auto' | 'full' | 'half'
-  overlayColor?: 'none' | 'black' | 'white' | 'primary'
-  overlayOpacity?: number
-  contentPosition?: string
-  contentHalfWidth?: boolean
-  content?: unknown
-  cta?: { active?: boolean; route?: unknown } | null
+const DEFAULT_AUTO_IMAGE_ASPECT = '16 / 9'
+
+/** Coerce API strings to current CMS values; unknown values default to transparent. */
+function normalizeCoverBg(raw: string | undefined): 'primary' | 'secondary' | 'transparent' {
+  const v = cleanStega(raw ?? '')
+  if (v === 'primary' || v === 'secondary' || v === 'transparent') return v
+  return 'transparent'
+}
+
+function normalizeCoverOverlay(raw: string | undefined): 'none' | 'primary' | 'secondary' {
+  const v = cleanStega(raw ?? '')
+  if (v === 'primary' || v === 'secondary') return v
+  return 'none'
+}
+
+function imageDimensionsToAspectCss(
+  img?: CoverBlockImage | CoverBlockImageMobile | null | undefined
+): string | undefined {
+  const dims = img?.asset?.metadata?.dimensions
+  if (!dims) return undefined
+  const w = Number(dims.width)
+  const h = Number(dims.height)
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return undefined
+  return `${w} / ${h}`
 }
 
 export default function CoverBlock({
   active = true,
   componentIndex = 0,
+  sectionPadding,
   anchor,
+  contentLayout,
   backgroundType = 'image',
   image,
   imageMobile,
-  backgroundColor = 'black',
+  backgroundColor: backgroundColorRaw = 'transparent',
   height = 'half',
-  overlayColor = 'none',
+  overlayColor: overlayColorRaw = 'none',
   overlayOpacity = 50,
   contentPosition = 'center',
   contentHalfWidth = false,
   content,
   cta,
 }: CoverBlockProps) {
-  if (!active) return null
+  const [isMobile, setIsMobile] = useState(false)
 
+  const backgroundTypeValue =
+    cleanStega(typeof backgroundType === 'string' ? backgroundType : 'image') === 'color'
+      ? 'color'
+      : 'image'
+  const heightValue: 'auto' | 'full' | 'half' = (() => {
+    const h = cleanStega(typeof height === 'string' ? height : 'half')
+    if (h === 'full') return 'full'
+    if (h === 'auto') return 'auto'
+    return 'half'
+  })()
+  const contentPositionValue =
+    cleanStega(typeof contentPosition === 'string' ? contentPosition : 'center') || 'center'
+
+  const backgroundColor = normalizeCoverBg(backgroundColorRaw as string | undefined)
+  const overlayColor = normalizeCoverOverlay(overlayColorRaw as string | undefined)
+  const layout = normalizeSectionContentLayout(contentLayout)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const isAutoHeight = heightValue === 'auto'
   const heightClass =
-    height === 'full' ? 'min-h-screen' : height === 'half' ? 'min-h-[50vh]' : 'min-h-[500px]'
-
-  const bgClass =
-    backgroundColor === 'black'
-      ? 'bg-foreground text-background'
-      : backgroundColor === 'primary'
-        ? 'bg-primary text-primary-foreground'
-        : 'bg-background text-foreground'
+    heightValue === 'full'
+      ? 'min-h-[75vh]'
+      : heightValue === 'half'
+        ? 'min-h-[50vh]'
+        : isAutoHeight && backgroundTypeValue === 'color'
+          ? 'min-h-[50vh]'
+          : isAutoHeight
+            ? ''
+            : 'min-h-[50vh]'
 
   const overlayColorValue =
-    overlayColor === 'black'
-      ? 'var(--foreground)'
-      : overlayColor === 'primary'
-        ? 'var(--primary)'
-        : overlayColor === 'white'
-          ? 'var(--background)'
-          : undefined
+    overlayColor === 'primary'
+      ? 'var(--primary)'
+      : overlayColor === 'secondary'
+        ? 'var(--secondary)'
+        : undefined
 
-  const effectiveColor =
-    backgroundType === 'image' ? overlayColor : backgroundColor
   const contentTextClass =
-    effectiveColor === 'black'
-      ? 'text-background'
-      : effectiveColor === 'primary'
+    backgroundTypeValue === 'image'
+      ? overlayColor === 'primary'
         ? 'text-primary-foreground'
-        : 'text-foreground'
-  const buttonVariant = effectiveColor === 'primary' ? 'secondary' : 'default'
+        : overlayColor === 'secondary'
+          ? 'text-secondary-foreground'
+          : 'text-foreground'
+      : 'text-foreground'
+
+  const buttonVariant =
+    backgroundTypeValue === 'color'
+      ? backgroundColor === 'secondary'
+        ? 'secondary'
+        : 'default'
+      : overlayColor === 'primary'
+        ? 'secondary'
+        : 'default'
+
+  const buttonSize =
+    backgroundTypeValue === 'color' &&
+    (backgroundColor === 'primary' || backgroundColor === 'transparent')
+      ? 'lg'
+      : 'default'
+
+  const colorSurfaceProps =
+    backgroundTypeValue === 'color'
+      ? {
+          'data-background-color': backgroundColor,
+          ...(backgroundColor === 'primary' || backgroundColor === 'secondary'
+            ? { 'data-surface': backgroundColor as 'primary' | 'secondary' }
+            : {}),
+        }
+      : {}
+
+  const colorBgClass =
+    backgroundTypeValue === 'color'
+      ? backgroundColor === 'transparent'
+        ? 'bg-transparent text-foreground'
+        : 'bg-background text-foreground'
+      : ''
 
   const positionClasses: Record<string, string> = {
     'top-left': 'items-start justify-start text-left',
@@ -81,10 +158,11 @@ export default function CoverBlock({
     'bottom-center': 'items-end justify-center text-center',
     'bottom-right': 'items-end justify-end text-right',
   }
-  const positionClass = positionClasses[contentPosition] || 'items-center justify-center text-center'
+  const positionClass =
+    positionClasses[contentPositionValue] || 'items-center justify-center text-center'
 
   const getBackgroundImageUrl = (
-    img: CoverBlockProps['image'],
+    img: CoverBlockImage | null | undefined,
     mobile = false
   ): string | undefined => {
     if (!img?.asset?.url) return undefined
@@ -93,7 +171,9 @@ export default function CoverBlock({
     return urlFor(img).width(w).height(h).quality(82).auto('format').fit('scale').url()
   }
 
-  const getBackgroundPosition = (img: CoverBlockProps['image'] | CoverBlockProps['imageMobile']) => {
+  const getBackgroundPosition = (
+    img: CoverBlockImage | CoverBlockImageMobile | null | undefined
+  ) => {
     if (!img?.hotspot || img.hotspot.x == null || img.hotspot.y == null) return 'center'
     const x = img.hotspot.x * 100
     const y = img.hotspot.y * 100
@@ -101,43 +181,27 @@ export default function CoverBlock({
   }
 
   const backgroundImageUrl =
-    backgroundType === 'image' ? getBackgroundImageUrl(image, false) : undefined
+    backgroundTypeValue === 'image' ? getBackgroundImageUrl(image, false) : undefined
 
-  // #region agent log
-  fetch('http://127.0.0.1:7630/ingest/b9616c32-2ae3-4cbd-ae57-3dce0e61bed2', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '14be99' },
-    body: JSON.stringify({
-      sessionId: '14be99',
-      location: 'cover-block/index.tsx:urls',
-      message: 'Derived image URLs and overlay render decision',
-      data: {
-        backgroundImageUrl: backgroundImageUrl ? 'SET' : 'MISSING',
-        overlayColorValue,
-        willRenderOverlay:
-          backgroundType === 'image' &&
-          !!overlayColor &&
-          overlayColor !== 'none' &&
-          !!overlayColorValue,
-      },
-      timestamp: Date.now(),
-      hypothesisId: 'H2',
-    }),
-  }).catch(() => {})
-  // #endregion
   const mobileBackgroundImageUrl =
-    backgroundType === 'image'
+    backgroundTypeValue === 'image'
       ? getBackgroundImageUrl(imageMobile ?? image ?? undefined, true)
       : undefined
   const backgroundPosition =
-    backgroundType === 'image' ? getBackgroundPosition(image) : 'center'
+    backgroundTypeValue === 'image' ? getBackgroundPosition(image) : 'center'
   const mobileBackgroundPosition =
-    backgroundType === 'image' ? getBackgroundPosition(imageMobile ?? image) : 'center'
+    backgroundTypeValue === 'image' ? getBackgroundPosition(imageMobile ?? image) : 'center'
 
   const isFirstBlock = componentIndex === 0
 
   useEffect(() => {
-    if (backgroundType !== 'image' || !isFirstBlock || !backgroundImageUrl) return
+    if (
+      !active ||
+      backgroundTypeValue !== 'image' ||
+      !isFirstBlock ||
+      !backgroundImageUrl
+    )
+      return
     const link = document.createElement('link')
     link.rel = 'preload'
     link.as = 'image'
@@ -146,20 +210,47 @@ export default function CoverBlock({
     return () => {
       if (link.parentNode) link.parentNode.removeChild(link)
     }
-  }, [backgroundType, isFirstBlock, backgroundImageUrl])
+  }, [active, backgroundTypeValue, isFirstBlock, backgroundImageUrl])
+
+  if (!active) return null
+
+  let sectionAspectStyle: CSSProperties | undefined
+  if (isAutoHeight && backgroundTypeValue === 'image') {
+    const activeImage =
+      isMobile && imageMobile?.asset?.url ? imageMobile : image
+    sectionAspectStyle = {
+      aspectRatio:
+        imageDimensionsToAspectCss(activeImage) ?? DEFAULT_AUTO_IMAGE_ASPECT,
+    }
+  }
+
+  const sectionStyle: CSSProperties = {
+    backgroundImage: backgroundImageUrl ? `url(${backgroundImageUrl})` : undefined,
+    backgroundSize: 'cover',
+    backgroundPosition,
+    backgroundRepeat: 'no-repeat',
+    ...sectionAspectStyle,
+  }
+
+  const showImageBgFallback =
+    backgroundTypeValue === 'image' && !backgroundImageUrl && !mobileBackgroundImageUrl
 
   return (
     <section
       id={anchor || `cover-block-${componentIndex}`}
-      className={`cover-block w-full relative px-5 py-24 ${heightClass} flex ${positionClass} ${backgroundType === 'color' ? bgClass : ''}`}
-      style={{
-        backgroundImage: backgroundImageUrl ? `url(${backgroundImageUrl})` : undefined,
-        backgroundSize: 'cover',
-        backgroundPosition,
-        backgroundRepeat: 'no-repeat',
-      }}
+      className={`cover-block w-full relative px-5 ${sectionPaddingToClass(sectionPadding, 'default')} ${heightClass} flex ${positionClass} ${colorBgClass}`}
+      style={sectionStyle}
+      {...colorSurfaceProps}
     >
-      {backgroundType === 'image' && mobileBackgroundImageUrl && (
+      {showImageBgFallback ? (
+        <ImagePlaceholder
+          variant="grey"
+          fill
+          className="z-5"
+          alt="Background image unavailable"
+        />
+      ) : null}
+      {backgroundTypeValue === 'image' && mobileBackgroundImageUrl && (
         <div
           className="md:hidden absolute inset-0 bg-cover bg-no-repeat"
           style={{
@@ -169,7 +260,7 @@ export default function CoverBlock({
         />
       )}
 
-      {backgroundType === 'image' && overlayColor && overlayColor !== 'none' && overlayColorValue && (
+      {backgroundTypeValue === 'image' && overlayColor !== 'none' && overlayColorValue && (
         <div
           className="absolute inset-0 z-10"
           style={{
@@ -183,20 +274,41 @@ export default function CoverBlock({
         <div
           className={`transition-all duration-300 ${contentHalfWidth ? 'md:max-w-[50%]' : ''}`}
         >
-          {content && Array.isArray(content) && content.length > 0 ? (
-            <div className={`content ${contentTextClass}`}>
-              <SimpleText content={content} />
-            </div>
-          ) : null}
-          {cta?.active && cta?.route ? (
-            <div className="mt-6">
-              <Button asChild variant={buttonVariant}>
-                <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
-                  {(cta.route as { title?: string }).title || 'Learn More'}
-                </Route>
-              </Button>
-            </div>
-          ) : null}
+          {layout === 'card' ? (
+            <Card className="w-full">
+              {content && Array.isArray(content) && content.length > 0 ? (
+                <div className={`content ${contentTextClass}`}>
+                  <SimpleText content={content} />
+                </div>
+              ) : null}
+              {cta?.active && cta?.route ? (
+                <div className="mt-6">
+                  <Button asChild variant={buttonVariant} size={buttonSize}>
+                    <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
+                      {(cta.route as { title?: string }).title || 'Learn More'}
+                    </Route>
+                  </Button>
+                </div>
+              ) : null}
+            </Card>
+          ) : (
+            <>
+              {content && Array.isArray(content) && content.length > 0 ? (
+                <div className={`content ${contentTextClass}`}>
+                  <SimpleText content={content} />
+                </div>
+              ) : null}
+              {cta?.active && cta?.route ? (
+                <div className="mt-6">
+                  <Button asChild variant={buttonVariant} size={buttonSize}>
+                    <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
+                      {(cta.route as { title?: string }).title || 'Learn More'}
+                    </Route>
+                  </Button>
+                </div>
+              ) : null}
+            </>
+          )}
         </div>
       </div>
     </section>

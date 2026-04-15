@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
+import { getPublicSiteUrl } from '@/lib/site-url'
+
+function trimOrigin(url: string | undefined): string | null {
+  if (!url?.trim()) return null
+  return url.replace(/\/+$/, '')
+}
+
 const allowedOrigins = [
-  siteUrl.replace(/\/$/, ''),
+  getPublicSiteUrl(),
+  trimOrigin(process.env.NEXT_PUBLIC_SITE_URL),
+  trimOrigin(process.env.NEXT_PUBLIC_LOCAL_URL),
   'http://localhost:3000',
   'http://127.0.0.1:3000',
-]
+].filter((o): o is string => Boolean(o))
 
 function isAllowedOrigin(origin: string | null): boolean {
   if (!origin) return false

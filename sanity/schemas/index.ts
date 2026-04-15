@@ -22,6 +22,8 @@ import galleryBlock from './components/gallery-block-schema'
 import videoBlock from './components/video-block-schema'
 import spacerBlock from './components/spacer-block-schema'
 import dividerBlock from './components/divider-block-schema'
+import splitScrollBlock from './components/split-scroll-block-schema'
+import problemBlock from './components/problem-block-schema'
 
 import column from './objects/column-schema'
 import defaultImage from './objects/default-img-schema'
@@ -54,6 +56,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     videoBlock,
     spacerBlock,
     dividerBlock,
+    splitScrollBlock,
+    problemBlock,
     column,
     defaultImage,
     cta,

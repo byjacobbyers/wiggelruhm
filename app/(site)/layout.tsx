@@ -28,11 +28,24 @@ export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const { isEnabled } = await draftMode()
-  const [{ data: site }, { data: headerNav }, { data: footerNav }] = await Promise.all([
-    sanityFetch({ query: SiteQuery }),
-    sanityFetch({ query: headerQuery }),
-    sanityFetch({ query: footerQuery }),
-  ])
+
+  const { site, headerNav, footerNav } = await (async () => {
+    try {
+      const [siteRes, headerRes, footerRes] = await Promise.all([
+        sanityFetch({ query: SiteQuery }),
+        sanityFetch({ query: headerQuery }),
+        sanityFetch({ query: footerQuery }),
+      ])
+      return {
+        site: siteRes.data,
+        headerNav: headerRes.data,
+        footerNav: footerRes.data,
+      }
+    } catch {
+      // CMS unreachable or invalid project (e.g. CI placeholders) — still render shell
+      return { site: null, headerNav: null, footerNav: null }
+    }
+  })()
 
   return (
     <div className={cn(sans.variable, mono.variable, serif.variable, "min-h-screen antialiased bg-background text-foreground font-sans", isEnabled && "body-preview-mode")}>

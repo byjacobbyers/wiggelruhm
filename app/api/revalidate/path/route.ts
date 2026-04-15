@@ -1,7 +1,6 @@
 import { revalidatePath } from 'next/cache'
 import { type NextRequest, NextResponse } from 'next/server'
 import { parseBody } from 'next-sanity/webhook'
-import { apiVersion, dataset, projectId } from '@/sanity/env'
 
 type WebhookPayload = {
   _type: string

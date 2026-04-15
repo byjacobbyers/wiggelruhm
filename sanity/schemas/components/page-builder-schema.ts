@@ -5,7 +5,6 @@ export default defineField({
   name: 'sections',
   type: 'array',
   of: [
-    
     { type: 'coverBlock' },
     { type: 'coverVideo' },
     { type: 'heroBlock' },
@@ -15,6 +14,8 @@ export default defineField({
     { type: 'videoBlock' },
     { type: 'galleryBlock' },
     { type: 'faqBlock' },
+    { type: 'splitScrollBlock' },
+    { type: 'problemBlock' },
     { type: 'columnBlock' },
     { type: 'formBlock' },
     { type: 'embedBlock' },

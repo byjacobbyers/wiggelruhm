@@ -10,6 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { textDisplayHeadingStyle } from '@/lib/text-display-style'
 
 type LinkWithRouteMarkValue = BaseRouteType & {
   _type?: string
@@ -37,7 +38,7 @@ function LinkWithRouteMark({
     _type: resolved._type || 'linkWithRoute',
   }
 
-  const { onClick: routeOnClick, title: titleTooltip, ...routeProps } =
+  const { onClick: routeOnClick, title: titleTooltip, ...routePropsForAnchor } =
     buildRouteProps(routeData, {
       ctaLocation: ctaLocation || undefined,
     })
@@ -50,7 +51,7 @@ function LinkWithRouteMark({
 
   const anchor = (
     <a
-      {...routeProps}
+      {...routePropsForAnchor}
       {...dataAttrs}
       onClick={(e: MouseEvent<HTMLAnchorElement>) => routeOnClick?.(e)}
       className="text-primary underline underline-offset-2 hover:opacity-90"
@@ -59,22 +60,32 @@ function LinkWithRouteMark({
     </a>
   )
 
-  if (!titleTooltip) return anchor
+  if (titleTooltip) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{anchor}</TooltipTrigger>
+        <TooltipContent>
+          <p className="max-w-xs text-balance">{titleTooltip}</p>
+        </TooltipContent>
+      </Tooltip>
+    )
+  }
 
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{anchor}</TooltipTrigger>
-      <TooltipContent>
-        <p className="max-w-xs text-balance">{titleTooltip}</p>
-      </TooltipContent>
-    </Tooltip>
-  )
+  return anchor
 }
 
 export const portableTextComponents = {
   block: {
+    display: ({ children }: { children?: ReactNode }) => (
+      <h1 className="display" style={textDisplayHeadingStyle}>
+        {children}
+      </h1>
+    ),
+    large: ({ children }: { children?: ReactNode }) => (
+      <p className="text-body-lg">{children}</p>
+    ),
     small: ({ children }: { children?: ReactNode }) => (
-      <p className="text-sm">{children}</p>
+      <small>{children}</small>
     ),
   },
   types: {
@@ -102,5 +113,8 @@ export const portableTextComponents = {
   },
   marks: {
     linkWithRoute: LinkWithRouteMark,
+    highlight: ({ children }: { children?: ReactNode }) => (
+      <mark className="text-primary bg-transparent">{children}</mark>
+    ),
   },
 }

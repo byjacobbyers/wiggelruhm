@@ -8,31 +8,37 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion'
-
-type Faq = {
-  question?: string
-  answer?: unknown
-}
-
-type FaqBlockProps = {
-  active?: boolean
-  componentIndex?: number
-  anchor?: string
-  faqs?: Faq[]
-}
+import {
+  normalizeSectionBackground,
+  sectionSemanticSurfaceClasses,
+  sectionSurfaceAttrs,
+} from '@/lib/section-background'
+import { sectionPaddingToClass } from '@/lib/section-padding'
+import { cn } from '@/lib/utils'
+import type { FaqBlockProps } from '@/types/components/faq-block-type'
 
 export default function FaqBlock({
   active = true,
   componentIndex = 0,
+  sectionPadding,
   anchor,
+  backgroundColor,
   faqs = [],
 }: FaqBlockProps) {
   if (!active || !faqs?.length) return null
 
+  const bg = normalizeSectionBackground(backgroundColor)
+
   return (
     <section
       id={anchor || `faq-block-${componentIndex}`}
-      className="faq-block w-full flex justify-center px-5 py-12"
+      data-background-color={bg}
+      {...sectionSurfaceAttrs(bg)}
+      className={cn(
+        'faq-block w-full flex justify-center px-5',
+        sectionSemanticSurfaceClasses(bg),
+        sectionPaddingToClass(sectionPadding, 'default')
+      )}
     >
       <div className="container">
         <motion.div

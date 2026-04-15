@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "../shared-theme.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -44,7 +45,7 @@ html {
   --font-sans: Merriweather Sans, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Merriweather, ui-serif, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 0.75rem;
+  --radius: 0rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
   --shadow-blur: 4px;
@@ -61,45 +62,58 @@ html {
   --shadow-2xl: 0px 1px 4px 0px hsl(0 0% 0% / 0.13);
   --tracking-normal: 0rem;
   --spacing: 0.25rem;
+
+  --space-1: 0.5625rem;
+  --space-2: 1.125rem;
+  --space-3: 1.6875rem;
+  --space-4: 2.25rem;
+  --space-6: 3.375rem;
+  --space-8: 4.5rem;
+  --space-10: 5.625rem;
+  --space-12: 6.75rem;
 }
 
 .dark {
-  --background: #121113;
-  --foreground: #c1c1c1;
-  --card: #121212;
-  --card-foreground: #c1c1c1;
-  --popover: #121113;
-  --popover-foreground: #c1c1c1;
-  --primary: #e78a53;
-  --primary-foreground: #121113;
-  --secondary: #5f8787;
-  --secondary-foreground: #121113;
-  --muted: #222222;
-  --muted-foreground: #888888;
-  --accent: #333333;
-  --accent-foreground: #c1c1c1;
-  --destructive: #5f8787;
-  --destructive-foreground: #121113;
-  --border: #222222;
-  --input: #222222;
-  --ring: #e78a53;
-  --chart-1: #5f8787;
-  --chart-2: #e78a53;
+  /* Match light :root primary pair: orange field + white copy */
+  --background: #d87943;
+  --foreground: #ffffff;
+  /* Slightly deeper orange for raised surfaces */
+  --card: #c56d3b;
+  --card-foreground: #ffffff;
+  --popover: #c56d3b;
+  --popover-foreground: #ffffff;
+  /* Teal CTAs / links read clearly on orange (replaces “primary on primary”) */
+  --primary: #527575;
+  --primary-foreground: #ffffff;
+  /* Warm secondary surface: light peach with dark type */
+  --secondary: #fbcb97;
+  --secondary-foreground: #3d2918;
+  --muted: #b86430;
+  --muted-foreground: #fff0e6;
+  --accent: #e78a53;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e8a878;
+  --input: #b86430;
+  --ring: #ffffff;
+  --chart-1: #ffffff;
+  --chart-2: #527575;
   --chart-3: #fbcb97;
-  --chart-4: #888888;
-  --chart-5: #999999;
-  --sidebar: #121212;
-  --sidebar-foreground: #c1c1c1;
-  --sidebar-primary: #e78a53;
-  --sidebar-primary-foreground: #121113;
-  --sidebar-accent: #333333;
-  --sidebar-accent-foreground: #c1c1c1;
-  --sidebar-border: #222222;
-  --sidebar-ring: #e78a53;
+  --chart-4: #fff0e6;
+  --chart-5: #3d2918;
+  --sidebar: #b86430;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #527575;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #c56d3b;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e8a878;
+  --sidebar-ring: #ffffff;
   --font-sans: Merriweather Sans, ui-sans-serif, sans-serif, system-ui;
   --font-serif: Merriweather, ui-serif, serif;
   --font-mono: JetBrains Mono, monospace;
-  --radius: 0.75rem;
+  --radius: 0rem;
   --shadow-x: 0px;
   --shadow-y: 1px;
   --shadow-blur: 4px;
@@ -195,13 +209,110 @@ html {
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    letter-spacing: var(--tracking-normal);
+/**
+ * Scoped palettes for CMS primary / secondary surfaces (Wiggelruhm light/dark tokens).
+ */
+.surface-palette-light,
+html.dark [data-surface='secondary'] {
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  --primary: #d87943;
+  --primary-foreground: #ffffff;
+  --secondary: #527575;
+  --secondary-foreground: #ffffff;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #eeeeee;
+  --accent-foreground: #111827;
+  --destructive: #ef4444;
+  --destructive-foreground: #fafafa;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #d87943;
+}
+
+/* Same tokens as `html.dark` — secondary sections use the orange “dark theme” field, not legacy charcoal. */
+.surface-palette-dark,
+html:not(.dark) [data-surface='secondary'] {
+  --background: #d87943;
+  --foreground: #ffffff;
+  --card: #c56d3b;
+  --card-foreground: #ffffff;
+  --popover: #c56d3b;
+  --popover-foreground: #ffffff;
+  --primary: #527575;
+  --primary-foreground: #ffffff;
+  --secondary: #fbcb97;
+  --secondary-foreground: #3d2918;
+  --muted: #b86430;
+  --muted-foreground: #fff0e6;
+  --accent: #e78a53;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e8a878;
+  --input: #b86430;
+  --ring: #ffffff;
+  --chart-1: #ffffff;
+  --chart-2: #527575;
+  --chart-3: #fbcb97;
+  --chart-4: #fff0e6;
+  --chart-5: #3d2918;
+  --sidebar: #b86430;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #527575;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #c56d3b;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e8a878;
+  --sidebar-ring: #ffffff;
+}
+
+@theme {
+  --text-h1: 3rem;
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.022em;
+  --text-h1--font-weight: 700;
+
+  --text-h2: 2.5rem;
+  --text-h2--line-height: 1.14;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: 2.0833rem;
+  --text-h3--line-height: 1.18;
+  --text-h3--letter-spacing: -0.016em;
+  --text-h3--font-weight: 600;
+
+  --text-h4: 1.7361rem;
+  --text-h4--line-height: 1.22;
+  --text-h4--letter-spacing: -0.012em;
+  --text-h4--font-weight: 700;
+
+  --text-body-lg: 1.45rem;
+  --text-body-lg--line-height: 1.5;
+  --text-body-lg--font-weight: 400;
+
+  --text-body: 1.208rem;
+  --text-body--line-height: 1.6;
+  --text-body--font-weight: 400;
+
+  --text-small: 1rem;
+  --text-small--line-height: 1.55;
+  --text-small--font-weight: 400;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --text-h1: 2.5rem;
+    --text-h2: 2.0833rem;
+    --text-h3: 1.7361rem;
+    --text-h4: 1.4467rem;
+    --text-body-lg: 1.206rem;
   }
 }
 
@@ -212,30 +323,134 @@ html {
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+    letter-spacing: var(--tracking-normal);
   }
   body.body-preview-mode header.sticky {
     top: 48px;
   }
-  h1 {
-    @apply text-4xl 2xl:text-7xl font-bold tracking-tight leading-normal pb-4;
-  }
-  h2 {
-    @apply text-3xl 2xl:text-5xl font-semibold tracking-tight leading-normal pb-3;
-  }
-  h3 {
-    @apply text-2xl 2xl:text-4xl font-semibold tracking-tight leading-normal pb-2;
-  }
-  p {
-    @apply text-lg 2xl:text-2xl min-h-[28px];
-  }
-  ol {
-    @apply text-lg 2xl:text-2xl list-decimal pl-6 pb-2;
-  }
-  ul {
-    @apply text-lg 2xl:text-2xl list-disc pl-8 pb-2;
-  }
 }
 
-.content {
-  @apply flex flex-col gap-4;
+@layer base {
+  .content {
+    @apply text-body text-foreground flex flex-col;
+  }
+
+  .content > * + * {
+    margin-top: var(--space-4);
+  }
+
+  .content > p + p,
+  .content > h3 + p,
+  .content > h4 + p {
+    margin-top: var(--space-3);
+  }
+
+  .content > h1 + *,
+  .content > h2 + *,
+  .content > .display + * {
+    margin-top: var(--space-4);
+  }
+
+  .content > * + h1,
+  .content > * + h2,
+  .content > * + .display {
+    margin-top: var(--space-10);
+  }
+
+  .content > * + h3 {
+    margin-top: var(--space-6);
+  }
+
+  .content > * + h4 {
+    margin-top: var(--space-4);
+  }
+
+  .content > small + h1,
+  .content > small + h2,
+  .content > small + h3,
+  .content > small + .display,
+  .content > p.text-sm + h1,
+  .content > p.text-sm + h2,
+  .content > p.text-sm + h3,
+  .content > p.text-sm + .display {
+    margin-top: 0;
+  }
+
+  .content > li + li {
+    margin-top: var(--space-1);
+  }
+
+  .content .display {
+    font-size: var(--text-display);
+    line-height: var(--text-display--line-height);
+    letter-spacing: var(--text-display--letter-spacing);
+    font-weight: var(--text-display--font-weight);
+  }
+
+  .content h1 {
+    @apply text-h1;
+  }
+
+  .content h2 {
+    @apply text-h2;
+  }
+
+  .content h3 {
+    @apply text-h3;
+  }
+
+  .content p {
+    @apply text-body;
+  }
+
+  .content p.lead {
+    @apply text-body-lg max-w-2xl;
+  }
+
+  .content strong {
+    @apply font-semibold;
+  }
+
+  .content small {
+    @apply text-small;
+  }
+
+  .content code {
+    @apply text-body font-mono;
+  }
+
+  .content mark {
+    @apply text-primary bg-transparent;
+  }
+
+  .content a {
+    @apply text-body text-primary underline underline-offset-4;
+  }
+
+  .content ul {
+    @apply text-body list-disc;
+    padding-left: var(--space-4);
+  }
+
+  .content ol {
+    @apply text-body list-decimal;
+    padding-left: var(--space-4);
+  }
+
+  .content li {
+    @apply text-body;
+  }
+
+  .content blockquote {
+    @apply border-l-4 border-primary italic opacity-90;
+    padding-left: var(--space-2);
+  }
+
+  .content hr {
+    @apply border-border;
+  }
+
+  .content.compact > * + * {
+    margin-top: var(--space-2);
+  }
 }
