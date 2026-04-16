@@ -65,4 +65,10 @@ export default defineConfig({
       return prev
     },
   },
+  releases: {
+    enabled: false
+  },
+  scheduledDrafts: {
+    enabled: false
+  }
 })
