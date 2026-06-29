@@ -7,15 +7,18 @@ import "./globals.css"
 import Template from "./template"
 import { sanityFetch, SanityLive } from "@/sanity/lib/live"
 import { SiteQuery } from "@/sanity/queries/documents/site-query"
+import { AnnouncementQuery } from "@/sanity/queries/documents/announcement-query"
 import { headerQuery, footerQuery } from "@/sanity/queries/components/page-nav-query"
 import { PreviewBar } from "@/components/preview-bar"
 import { VisualEditing } from "next-sanity/visual-editing"
 import { draftMode } from "next/headers"
+import AnnouncementBar from "@/components/announcement"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import SmoothScrollProvider from "@/components/smooth-scroll-provider"
 import { Providers } from "@/components/providers"
 import OrganizationJsonLd from "@/components/organization-jsonld"
+import type { AnnouncementType } from "@/types/documents/announcement-type"
 
 export const revalidate = 60
 
@@ -28,6 +31,9 @@ export default async function SiteLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const { isEnabled } = await draftMode()
+
+  const now = new Date()
+  const todayLocal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`
 
   const { site, headerNav, footerNav } = await (async () => {
     try {
@@ -47,8 +53,19 @@ export default async function SiteLayout({
     }
   })()
 
+  let announcement: AnnouncementType | null = null
+  try {
+    const announcementRes = await sanityFetch({
+      query: AnnouncementQuery,
+      params: { today: todayLocal },
+    })
+    announcement = announcementRes.data
+  } catch {
+    announcement = null
+  }
+
   return (
-    <div className={cn(sans.variable, mono.variable, serif.variable, "min-h-screen antialiased bg-background text-foreground font-sans", isEnabled && "body-preview-mode")}>
+    <div className={cn(sans.variable, mono.variable, serif.variable, "flex min-h-screen flex-col antialiased bg-background text-foreground font-sans", isEnabled && "body-preview-mode")}>
       {process.env.NEXT_PUBLIC_GTM_ID && (
         <>
           <Script
@@ -92,12 +109,17 @@ export default async function SiteLayout({
         {site && <OrganizationJsonLd site={site} />}
         {isEnabled && <PreviewBar />}
         <SmoothScrollProvider>
-          <Header navigation={headerNav} />
-          <Template>
-            {children}
-            <SanityLive />
-            {isEnabled && <VisualEditing zIndex={999999} />}
-          </Template>
+          <div className="sticky top-0 z-50 flex shrink-0 flex-col bg-background">
+            <AnnouncementBar announcement={announcement} />
+            <Header navigation={headerNav} />
+          </div>
+          <div className="flex min-h-0 flex-1 flex-col">
+            <Template>
+              {children}
+              <SanityLive />
+              {isEnabled && <VisualEditing zIndex={999999} />}
+            </Template>
+          </div>
           <Footer navigation={footerNav} />
         </SmoothScrollProvider>
       </Providers>

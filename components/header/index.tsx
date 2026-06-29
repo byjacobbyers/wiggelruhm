@@ -44,7 +44,7 @@ export default function Header({ navigation }: HeaderProps) {
     <>
       <header
         ref={headerRef}
-        className="sticky top-0 z-50 w-full border-b-4 border-primary bg-background px-5"
+        className="relative z-50 w-full border-b-4 border-primary bg-background px-5"
       >
         <div className="relative z-10 flex h-16 items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2 self-center">

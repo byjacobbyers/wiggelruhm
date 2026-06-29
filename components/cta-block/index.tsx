@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import Route from '@/components/route'
 import SimpleText from '@/components/simple-text'
@@ -54,13 +53,7 @@ export default function CtaBlock({
       )}
     >
       <div className="container">
-        <motion.div
-          className={`mt-5 flex w-full flex-col gap-6 ${stackItemsClass}`}
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: componentIndex !== 0 ? 0.5 : 0 }}
-        >
+        <div className={`mt-5 flex w-full flex-col gap-6 ${stackItemsClass}`}>
           {layout === 'card' ? (
             <Card className="w-full">
               {content ? (
@@ -100,7 +93,7 @@ export default function CtaBlock({
               ) : null}
             </>
           )}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

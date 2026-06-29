@@ -106,12 +106,6 @@ export default defineType({
       initialValue: 'center',
     }),
     defineField({
-      title: 'Content Half Width (Desktop)',
-      name: 'contentHalfWidth',
-      type: 'boolean',
-      initialValue: false,
-    }),
-    defineField({
       title: 'Content',
       name: 'content',
       type: 'simpleText',

@@ -31,6 +31,8 @@ export default defineType({
       name: 'backgroundColor',
       type: 'string',
       group: 'page',
+      description:
+        'Primary follows the site theme (white/light gray on a light site, orange field in dark mode). On a light site, Secondary is an orange band (#d87943) with white text; secondary-style buttons use teal (#527575). On a dark site, Secondary is a light “island” (white/light) for contrast.',
       options: {
         list: [
           { title: 'Primary', value: 'primary' },

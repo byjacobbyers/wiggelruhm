@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import Route from '@/components/route'
 import SanityImage from '@/components/sanity-image'
@@ -48,13 +47,7 @@ export default function HeroBlock({
       <div
         className={`container flex flex-wrap md:flex-nowrap ${layoutClass} flex-col-reverse items-center w-full gap-10 gap-y-16`}
       >
-        <motion.div
-          className="w-full md:w-1/2 flex flex-col gap-6"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: componentIndex !== 0 ? 0.5 : 0 }}
-        >
+        <div className="w-full md:w-1/2 flex flex-col gap-6">
           {innerContentLayout === 'card' ? (
             <Card className="w-full">
               {content ? (
@@ -90,14 +83,8 @@ export default function HeroBlock({
               ) : null}
             </>
           )}
-        </motion.div>
-        <motion.div
-          className="relative mx-auto w-full max-w-xl overflow-hidden rounded-lg md:w-1/2"
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: componentIndex !== 0 ? 0.5 : 0 }}
-        >
+        </div>
+        <div className="relative mx-auto w-full max-w-xl overflow-hidden rounded-lg md:w-1/2">
           <SanityImage
             image={image}
             fill={false}
@@ -109,7 +96,7 @@ export default function HeroBlock({
             className="h-auto w-full"
             sizes="(max-width: 768px) min(100vw, 42rem), min(50vw, 42rem)"
           />
-        </motion.div>
+        </div>
       </div>
     </section>
   )

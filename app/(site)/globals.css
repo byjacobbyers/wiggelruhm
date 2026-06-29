@@ -211,6 +211,9 @@ html {
 
 /**
  * Scoped palettes for CMS primary / secondary surfaces (Wiggelruhm light/dark tokens).
+ * - primary: inherit global theme (no rules needed).
+ * - secondary on html:not(.dark): orange field (--background #d87943, --foreground white); secondary-variant buttons use light teal (#527575 / white). Default (primary) buttons invert for contrast.
+ * - secondary on html.dark: light “island” (white/light block below) on the orange dark site.
  */
 .surface-palette-light,
 html.dark [data-surface='secondary'] {
@@ -235,9 +238,43 @@ html.dark [data-surface='secondary'] {
   --ring: #d87943;
 }
 
-/* Same tokens as `html.dark` — secondary sections use the orange “dark theme” field, not legacy charcoal. */
-.surface-palette-dark,
 html:not(.dark) [data-surface='secondary'] {
+  --background: #d87943;
+  --foreground: #ffffff;
+  --card: #c56d3b;
+  --card-foreground: #ffffff;
+  --popover: #c56d3b;
+  --popover-foreground: #ffffff;
+  --primary: #ffffff;
+  --primary-foreground: #d87943;
+  --secondary: #527575;
+  --secondary-foreground: #ffffff;
+  --muted: #b86430;
+  --muted-foreground: #fff0e6;
+  --accent: #e78a53;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e8a878;
+  --input: #b86430;
+  --ring: #ffffff;
+  --chart-1: #ffffff;
+  --chart-2: #527575;
+  --chart-3: #fbcb97;
+  --chart-4: #fff0e6;
+  --chart-5: #3d2918;
+  --sidebar: #b86430;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #527575;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #c56d3b;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e8a878;
+  --sidebar-ring: #ffffff;
+}
+
+/* Escape hatch: full orange-field token set (same as site `html.dark`). */
+.surface-palette-dark {
   --background: #d87943;
   --foreground: #ffffff;
   --card: #c56d3b;

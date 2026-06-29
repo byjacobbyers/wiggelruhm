@@ -36,7 +36,6 @@ export type CoverBlockProps = {
   overlayColor?: 'none' | 'primary' | 'secondary'
   overlayOpacity?: number
   contentPosition?: string
-  contentHalfWidth?: boolean
   content?: unknown
   cta?: CoverBlockCta
 }

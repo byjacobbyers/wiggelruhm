@@ -9,12 +9,15 @@ export function resolveRouteUrl(route: BaseRouteType): string {
     case 'page': {
       const pageSlug =
         typeof route.pageRoute?.slug === 'string' ? route.pageRoute.slug : route.pageRoute?.slug?.current
-      return pageSlug ? `/${pageSlug}` : '#'
+      if (!pageSlug) return '#'
+      if (pageSlug === 'home') return '/'
+      return `/${pageSlug}`
     }
     case 'event': {
       const eventSlug =
         typeof route.eventRoute?.slug === 'string' ? route.eventRoute.slug : route.eventRoute?.slug?.current
-      return eventSlug ? `/events/${eventSlug}` : '#'
+      if (!eventSlug) return '#'
+      return `/events/${eventSlug}`
     }
     case 'path':
       if (route.route === undefined || route.route === null) return '#'

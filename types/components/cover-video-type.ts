@@ -24,7 +24,6 @@ export type CoverVideoProps = {
   overlayColor?: 'none' | 'primary' | 'secondary'
   overlayOpacity?: number
   contentPosition?: string
-  contentHalfWidth?: boolean
   content?: unknown
   cta?: CoverVideoCta
   autoplay?: boolean

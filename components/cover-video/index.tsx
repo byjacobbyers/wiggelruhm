@@ -55,7 +55,6 @@ export default function CoverVideo({
   overlayColor: overlayColorRaw = 'none',
   overlayOpacity = 50,
   contentPosition = 'center',
-  contentHalfWidth = false,
   content,
   cta,
   autoplay = true,
@@ -234,43 +233,41 @@ export default function CoverVideo({
       )}
 
       <div className="relative z-20 w-full container mx-auto">
-        <div className={`transition-all duration-300 ${contentHalfWidth ? 'md:max-w-[50%]' : ''}`}>
-          {layout === 'card' ? (
-            <Card className="w-full">
-              {content && Array.isArray(content) && content.length > 0 ? (
-                <div className={`content ${contentTextClass}`}>
-                  <SimpleText content={content} />
-                </div>
-              ) : null}
-              {cta?.active && cta?.route ? (
-                <div className="mt-6">
-                  <Button asChild variant={buttonVariant}>
-                    <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
-                      {(cta.route as { title?: string }).title || 'Learn More'}
-                    </Route>
-                  </Button>
-                </div>
-              ) : null}
-            </Card>
-          ) : (
-            <>
-              {content && Array.isArray(content) && content.length > 0 ? (
-                <div className={`content ${contentTextClass}`}>
-                  <SimpleText content={content} />
-                </div>
-              ) : null}
-              {cta?.active && cta?.route ? (
-                <div className="mt-6">
-                  <Button asChild variant={buttonVariant}>
-                    <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
-                      {(cta.route as { title?: string }).title || 'Learn More'}
-                    </Route>
-                  </Button>
-                </div>
-              ) : null}
-            </>
-          )}
-        </div>
+        {layout === 'card' ? (
+          <Card className="w-full">
+            {content && Array.isArray(content) && content.length > 0 ? (
+              <div className={`content ${contentTextClass}`}>
+                <SimpleText content={content} />
+              </div>
+            ) : null}
+            {cta?.active && cta?.route ? (
+              <div className="mt-6">
+                <Button asChild variant={buttonVariant}>
+                  <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
+                    {(cta.route as { title?: string }).title || 'Learn More'}
+                  </Route>
+                </Button>
+              </div>
+            ) : null}
+          </Card>
+        ) : (
+          <>
+            {content && Array.isArray(content) && content.length > 0 ? (
+              <div className={`content ${contentTextClass}`}>
+                <SimpleText content={content} />
+              </div>
+            ) : null}
+            {cta?.active && cta?.route ? (
+              <div className="mt-6">
+                <Button asChild variant={buttonVariant}>
+                  <Route data={cta.route as Parameters<typeof Route>[0]['data']}>
+                    {(cta.route as { title?: string }).title || 'Learn More'}
+                  </Route>
+                </Button>
+              </div>
+            ) : null}
+          </>
+        )}
       </div>
     </section>
   )

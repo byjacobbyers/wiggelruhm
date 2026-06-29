@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import NormalText from '@/components/normal-text'
 import {
   normalizeSectionBackground,
@@ -45,12 +44,7 @@ export default function TextBlock({
       )}
       {...sectionSurfaceAttrs(bg)}
     >
-      <motion.div
-        className={cn('container flex w-full flex-col', alignClass, itemsClass)}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-      >
+      <div className={cn('container flex w-full flex-col', alignClass, itemsClass)}>
         {layout === 'card' ? (
           <Card className="w-full">
             <div className="content text-balance">
@@ -62,7 +56,7 @@ export default function TextBlock({
             <NormalText content={content} />
           </div>
         )}
-      </motion.div>
+      </div>
     </section>
   )
 }

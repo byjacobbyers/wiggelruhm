@@ -27,6 +27,7 @@ function getPathForDocument(body: WebhookPayload): string[] {
     }
     case 'navigation':
     case 'site':
+    case 'announcement':
       paths.push('/')
       break
     default:
@@ -60,8 +61,17 @@ export async function POST(req: NextRequest) {
   }
 
   const paths = getPathForDocument(body)
+  const layoutScope =
+    body._type === 'navigation' ||
+    body._type === 'site' ||
+    body._type === 'announcement'
+
   for (const path of paths) {
-    revalidatePath(path)
+    if (layoutScope) {
+      revalidatePath(path, 'layout')
+    } else {
+      revalidatePath(path)
+    }
   }
 
   return NextResponse.json({ body, paths })
