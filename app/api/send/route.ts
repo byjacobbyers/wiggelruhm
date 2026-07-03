@@ -1,4 +1,5 @@
 import { EmailTemplate } from '@/components/email-template'
+import { render } from '@react-email/render'
 import { Resend } from 'resend'
 import * as React from 'react'
 
@@ -49,14 +50,15 @@ export async function POST(request: Request) {
       }
     }
 
-    const recipientEmail =
-      process.env.CONTACT_FORM_RECIPIENT_EMAIL?.split(',').map((e) => e.trim()) ??
-      []
+    const recipientRaw = process.env.CONTACT_FORM_RECIPIENT_EMAIL?.trim()
+    const recipientEmail = recipientRaw
+      ? recipientRaw.split(',').map((e) => e.trim()).filter(Boolean)
+      : []
     const fromEmail =
-      process.env.CONTACT_FORM_FROM_EMAIL ??
+      process.env.CONTACT_FORM_FROM_EMAIL?.trim() ??
       'Wiggelruhm <no-reply@example.com>'
     const replyToDefault =
-      process.env.CONTACT_FORM_REPLY_TO ?? 'no-reply@example.com'
+      process.env.CONTACT_FORM_REPLY_TO?.trim() ?? 'no-reply@example.com'
     const replyTo = isAnonymous ? replyToDefault : email
 
     if (recipientEmail.length === 0) {
@@ -67,6 +69,15 @@ export async function POST(request: Request) {
       )
     }
 
+    const html = await render(
+      React.createElement(EmailTemplate, {
+        name: isAnonymous ? undefined : name,
+        email: isAnonymous ? undefined : email,
+        message: message.trim(),
+        isAnonymous,
+      })
+    )
+
     const { data, error } = await resend.emails.send({
       from: fromEmail,
       to: recipientEmail,
@@ -74,18 +85,23 @@ export async function POST(request: Request) {
       subject: isAnonymous
         ? 'Wiggelruhm - Anonymous Contact Form Submission'
         : `Wiggelruhm - Contact Form Submission from ${name}`,
-      react: EmailTemplate({
-        name: isAnonymous ? undefined : name,
-        email: isAnonymous ? undefined : email,
-        message: message.trim(),
-        isAnonymous,
-      }) as React.ReactElement,
+      html,
     })
 
     if (error) {
       console.error('Resend error:', error)
+      const detail =
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error &&
+        typeof (error as { message: unknown }).message === 'string'
+          ? (error as { message: string }).message
+          : undefined
       return Response.json(
-        { error: 'Failed to send email' },
+        {
+          error: 'Failed to send email',
+          ...(detail ? { detail } : {}),
+        },
         { status: 500 }
       )
     }
