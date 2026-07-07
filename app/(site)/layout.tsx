@@ -120,7 +120,7 @@ export default async function SiteLayout({
               {isEnabled && <VisualEditing zIndex={999999} />}
             </Template>
           </div>
-          <Footer navigation={footerNav} />
+          <Footer navigation={footerNav} site={site} />
         </SmoothScrollProvider>
       </Providers>
     </div>

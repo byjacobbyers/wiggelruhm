@@ -156,7 +156,7 @@ export default function FormBlock({
           <Card className="mt-8 shadow-lg">
             <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="flex flex-row items-center justify-between border p-4">
+              <div className="flex flex-row items-center justify-between border-b border-x p-4">
                 <div className="space-y-0.5">
                   <Label className="text-base">Send Anonymously?</Label>
                   <p className="text-sm text-muted-foreground">

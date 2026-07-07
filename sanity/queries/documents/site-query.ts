@@ -30,6 +30,7 @@ export const SiteQuery = groq`*[_type == "site"][0] {
     url,
     email,
     telephone,
-    priceRange
+    priceRange,
+    nonprofitId
   }
 }`

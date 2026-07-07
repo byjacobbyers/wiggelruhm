@@ -139,6 +139,7 @@ export type SiteType = {
     email?: string
     telephone?: string
     priceRange?: string
+    nonprofitId?: string
   }
 }
 
@@ -173,6 +174,7 @@ export function generateOrganizationJsonLd(site: SiteType | null) {
     ...(email && { email }),
     ...(org?.telephone && { telephone: org.telephone }),
     ...(org?.priceRange && { priceRange: org.priceRange }),
+    ...(org?.nonprofitId && { taxID: org.nonprofitId }),
   }
 
   if (
